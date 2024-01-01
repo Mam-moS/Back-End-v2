@@ -1,5 +1,6 @@
 package com.mmos.mmos.security;
 
+import com.mmos.mmos.config.CorsConfig;
 import com.mmos.mmos.src.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -21,13 +22,16 @@ public class SecurityConfig {
 
     private final AuthService authService;
     private final JwtTokenFilter jwtTokenFilter;
+    private final CorsConfig corsConfig;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .httpBasic(AbstractHttpConfigurer::disable) // HTTP 기본 인증 비활성화
                 .csrf(AbstractHttpConfigurer::disable)  // CSRF 보안 비활성화
+
                 .sessionManagement((sessionManagement) -> sessionManagement.sessionCreationPolicy(STATELESS))   // 세션 비활성화
+                .addFilter(corsConfig.corsFilter())
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(authorizeRequest ->
                         authorizeRequest

@@ -104,7 +104,7 @@ public class SignUpPageController extends BaseController {
     public ResponseEntity<ResponseApiMessage> sendCertificationNumber(@RequestBody SendEmailDto dto) {
         try {
             Map<String, Object> result = UnivCert.certify("ee5c770b-a868-49c3-9b98-1aaf42383c94", dto.getEmail(), "가천대학교", true);
-            return sendResponseHttpByJson(SUCCESS, "이메일 전송 성공", result.get("code"));
+            return sendResponseHttpByJson(SUCCESS, "이메일 전송 성공", result);
         } catch (Exception e) {
             e.printStackTrace();
             return sendResponseHttpByJson(BUSINESS_LOGIC_ERROR, "서버 오류", null);
@@ -115,7 +115,7 @@ public class SignUpPageController extends BaseController {
     public ResponseEntity<ResponseApiMessage> checkCertificationNumber(@RequestBody CheckEmailDto dto) {
         try {
             Map<String, Object> result = UnivCert.certifyCode("ee5c770b-a868-49c3-9b98-1aaf42383c94", dto.getEmail(), "가천대학교", dto.getCode());
-            return sendResponseHttpByJson(SUCCESS, result.get("success").toString(), result.get("code"));
+            return sendResponseHttpByJson(SUCCESS, result.get("success").toString(), result);
         } catch (Exception e) {
             e.printStackTrace();
             return sendResponseHttpByJson(BUSINESS_LOGIC_ERROR, "서버 오류", null);
