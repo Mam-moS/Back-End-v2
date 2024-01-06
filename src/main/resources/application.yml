@@ -14,7 +14,7 @@ spring:
         show-sql: true
         #        ddl-auto: update
         hbm2ddl:
-          auto: create
+          auto: update
 
 #springdoc:
 #  packages-to-scan: com.mmos.mmos.src.controller
