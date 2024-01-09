@@ -20,7 +20,7 @@ public class FriendSectionDto {
 
     public FriendSectionDto(User friend) {
         this.id = friend.getUserId();
-        this.name = friend.getUsername();
+        this.name = friend.getName();
         this.todayStudyTime = friend.getUserTotalStudyTime();
 
         for (UserBadge userUserbadge : friend.getUserUserbadges()) {

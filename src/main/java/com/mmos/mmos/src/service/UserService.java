@@ -70,6 +70,7 @@ public class UserService {
         } catch (DuplicateRequestException e) {
             throw e;
         } catch (Exception e) {
+            e.printStackTrace();
             throw new BaseException(DATABASE_ERROR);
         }
     }

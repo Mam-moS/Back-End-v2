@@ -43,7 +43,7 @@ public class HomePageResponseDto {
 
         // Friend Section
         for (Friend myFriend : friends) {
-            friend.add(new FriendSectionDto(myFriend.getUser()));
+            friend.add(new FriendSectionDto(myFriend.getFriend()));
         }
     }
 }
