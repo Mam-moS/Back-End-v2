@@ -1,6 +1,7 @@
 package com.mmos.mmos.src.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.mmos.mmos.src.domain.dto.request.PostSaveRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -8,6 +9,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -49,7 +52,11 @@ public class Post {
     @JoinColumn(name = "studyIndex")
     private Study study = null;
 
-    public Post(PostSaveRequestDto postSaveRequestDto, User user, Study study, Timestamp postCreatedAt, Timestamp postUpdatedAt) {
+    @JsonManagedReference
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<File> files = new ArrayList<>();
+
+    public Post(PostSaveRequestDto postSaveRequestDto, User user, Study study, Timestamp postCreatedAt, Timestamp postUpdatedAt, List<File> files) {
         this.postIsNotice = postSaveRequestDto.getIsNotice();
         this.postTitle = postSaveRequestDto.getPostTitle();
         this.postContents = postSaveRequestDto.getPostContents();
@@ -59,6 +66,11 @@ public class Post {
         this.study = study;
         this.postCreatedAt = postCreatedAt;
         this.postUpdatedAt = postUpdatedAt;
+        this.files = files;
+    }
+
+    public void addFile(File file) {
+        this.files.add(file);
     }
 
     public void setUpdatedAt(Timestamp now) {

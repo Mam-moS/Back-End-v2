@@ -1,10 +1,12 @@
 package com.mmos.mmos.src.domain.dto.response.post;
 
+import com.mmos.mmos.src.domain.entity.File;
 import com.mmos.mmos.src.domain.entity.Post;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -17,6 +19,7 @@ public class PostPageResponseDto {
     private Timestamp updateAt;
     private String contents;
     private String writerName;
+    private List<File> files;
 
     public PostPageResponseDto(Post post) {
         this.title = post.getPostTitle();
@@ -26,5 +29,6 @@ public class PostPageResponseDto {
         this.updateAt = post.getPostUpdatedAt();
         this.contents = post.getPostContents();
         this.writerName = post.getPostWriterName();
+        this.files = post.getFiles();
     }
 }

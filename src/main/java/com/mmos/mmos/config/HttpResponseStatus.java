@@ -110,6 +110,8 @@ public enum HttpResponseStatus {
     UPDATE_STUDY_DUPLICATE_NAME(false, BAD_REQUEST.value(), "이전 이름과 같습니다. 새로운 이름을 입력해주세요."),
     UPDATE_STUDY_ALREADY_COMPLETE(false, BAD_REQUEST.value(), "이미 완수한 스터디입니다."),
     EMPTY_STUDY(false, BAD_REQUEST.value(), "존재하지 않는 스터디입니다."),
+    FILE_LIMIT_OVER(false, BAD_REQUEST.value(), "첨부 파일의 제한 개수를 초과하였습니다."),
+
 
 
     // StudyTime
@@ -137,6 +139,9 @@ public enum HttpResponseStatus {
     PROJECT_EMPTY_STATUS(false,BAD_REQUEST.value(),"상태를 선택해주세요."),
     PROJECT_FULL_VISIBLE(false,BAD_REQUEST.value(),"더 이상 추가할 수 없습니다."),
     EMPTY_PROJECT(false,BAD_REQUEST.value(),"존재하지 않는 프로젝트입니다."),
+
+    // File
+    EMPTY_FILE(false,BAD_REQUEST.value(),"존재하지 않는 파일입니다."),
 
     /**
      * 500 : Database, Server 오류

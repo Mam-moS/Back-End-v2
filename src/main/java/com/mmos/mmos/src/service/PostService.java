@@ -6,10 +6,7 @@ import com.mmos.mmos.config.exception.NotAuthorizedAccessException;
 import com.mmos.mmos.src.domain.dto.request.PostSaveRequestDto;
 import com.mmos.mmos.src.domain.dto.response.study.NoticeSectionDto;
 import com.mmos.mmos.src.domain.dto.response.study.PromotionSectionDto;
-import com.mmos.mmos.src.domain.entity.Post;
-import com.mmos.mmos.src.domain.entity.Study;
-import com.mmos.mmos.src.domain.entity.User;
-import com.mmos.mmos.src.domain.entity.UserStudy;
+import com.mmos.mmos.src.domain.entity.*;
 import com.mmos.mmos.src.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -30,6 +27,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserStudyService userStudyService;
+    private final FileService fileService;
 
     public Post findPostByIdx(Long postIdx) throws BaseException {
         return postRepository.findById(postIdx)
@@ -55,9 +53,13 @@ public class PostService {
 
             User user = userStudy.getUser();
             Study study = userStudy.getStudy();
+            List<File> files = new ArrayList<>();
+            if(!postSaveRequestDto.getFileIndex().isEmpty()) {
+                files = fileService.getFiles(postSaveRequestDto.getFileIndex());
+            }
 
             // Post 생성/매핑
-            Post post = new Post(postSaveRequestDto, user, study, new Timestamp(System.currentTimeMillis()), null);
+            Post post = new Post(postSaveRequestDto, user, study, new Timestamp(System.currentTimeMillis()), null, files);
             study.addPost(post);
 
             return postRepository.save(post);
