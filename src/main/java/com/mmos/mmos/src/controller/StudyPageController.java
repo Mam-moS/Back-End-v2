@@ -1,10 +1,7 @@
 package com.mmos.mmos.src.controller;
 
 import com.mmos.mmos.config.ResponseApiMessage;
-import com.mmos.mmos.config.exception.BaseException;
-import com.mmos.mmos.config.exception.BusinessLogicException;
-import com.mmos.mmos.config.exception.EmptyInputException;
-import com.mmos.mmos.config.exception.NotAuthorizedAccessException;
+import com.mmos.mmos.config.exception.*;
 import com.mmos.mmos.src.domain.dto.request.*;
 import com.mmos.mmos.src.domain.dto.response.study.*;
 import com.mmos.mmos.src.domain.entity.*;
@@ -129,6 +126,8 @@ public class StudyPageController extends BaseController {
                 throw new EmptyInputException(POST_POST_EMPTY_CONTENTS);
             if(requestDto.getIsNotice())
                 throw new BusinessLogicException(BUSINESS_LOGIC_ERROR);
+            if(!requestDto.getFileIndex().isEmpty() && requestDto.getFileIndex().size() > 3)
+                throw new OutOfRangeException(FILE_LIMIT_OVER);
 
             return sendResponseHttpByJson(SUCCESS, "스터디 홍보 글 쓰기 성공", postService.savePost(userStudyIdx, requestDto));
         } catch (BaseException e) {
@@ -146,6 +145,8 @@ public class StudyPageController extends BaseController {
                 throw new EmptyInputException(POST_POST_EMPTY_CONTENTS);
             if(!requestDto.getIsNotice())
                 throw new BusinessLogicException(BUSINESS_LOGIC_ERROR);
+            if(requestDto.getFileIndex().size() > 3)
+                throw new OutOfRangeException(FILE_LIMIT_OVER);
 
             return sendResponseHttpByJson(SUCCESS, "스터디 공지 글 쓰기 성공", postService.savePost(userStudyIdx, requestDto));
         } catch (BaseException e) {
