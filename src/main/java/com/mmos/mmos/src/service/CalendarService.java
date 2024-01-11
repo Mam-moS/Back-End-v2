@@ -82,7 +82,8 @@ public class CalendarService {
             boolean isExist = false;
             Calendar calendar = null;
             for (Calendar userCalendar : user.getUserCalendars()) {
-                if (userCalendar.getCalendarYear().equals(calendarGetRequestDto.getYear()) && userCalendar.getCalendarMonth().equals(calendarGetRequestDto.getMonth())) {
+                if (userCalendar.getCalendarYear().equals(calendarGetRequestDto.getYear())
+                        && userCalendar.getCalendarMonth().equals(calendarGetRequestDto.getMonth())) {
                     calendar = userCalendar;
                     isExist = true;
                 }
@@ -99,17 +100,20 @@ public class CalendarService {
                 // 해당 달을 포함하는 Project 찾기
                 LocalDate startDate;
                 LocalDate endDate;
-                LocalDate calendarDate = LocalDate.of(calendarGetRequestDto.getYear(), calendarGetRequestDto.getMonth(), 1);
+                LocalDate thisMonth = LocalDate.of(calendarGetRequestDto.getYear(), calendarGetRequestDto.getMonth(), 1);
 
                 for (Project project : userProjectList) {
-                    startDate = LocalDate.of(project.getProjectStartTime().getYear(), project.getProjectStartTime().getMonthValue(), 1);
-                    endDate = LocalDate.of(project.getProjectEndTime().getYear(), project.getProjectEndTime().getMonthValue(), 20);
-                    if ((startDate.isBefore(calendarDate) || startDate.isEqual(calendarDate)) && (endDate.isAfter(calendarDate) || endDate.isEqual((calendarDate)))) {
+                    if(!project.getProjectIsVisible())
+                        continue;
+                    startDate = project.getProjectStartTime();
+                    endDate = project.getProjectEndTime();
+
+                    if(((startDate.getYear() < thisMonth.getYear()) || startDate.getMonthValue() <= thisMonth.getMonthValue())
+                            && ((endDate.getYear() > thisMonth.getYear()) || endDate.getMonthValue() >= thisMonth.getMonthValue())) {
                         calendarProjectList.add(project);
                     }
                 }
             }
-
             return new CalendarSectionDto(calendar, calendarProjectList);
         } catch (EmptyEntityException e) {
             throw e;

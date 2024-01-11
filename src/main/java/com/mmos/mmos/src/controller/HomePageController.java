@@ -57,7 +57,7 @@ public class HomePageController extends BaseController {
                         if (calendarPlanner.getPlannerDate().equals(LocalDate.now())) {
                             int cnt = 0;
                             for (Plan plannerPlan : calendarPlanner.getPlannerPlans()) {
-                                if (cnt > 7)
+                                if (cnt > 9)
                                     break;
                                 plans.add(plannerPlan);
                                 cnt++;
@@ -67,7 +67,15 @@ public class HomePageController extends BaseController {
             }
 
             // Friend 찾기
-            List<Friend> friends = friendService.getFriends(userIdx, 1);
+            List<Friend> friends = new ArrayList<>();
+            int friendCnt = 0;
+            for (Friend friend : friendService.getFriends(userIdx, 1)) {
+                if(friendCnt > 9)
+                    break;
+                friends.add(friend);
+                friendCnt++;
+            }
+
             // 티어 찾기
             Badge tier = userBadgeService.getRepresentBadges(userIdx, "tier").get(0).getBadge();
             // 뱃지 찾기
