@@ -25,13 +25,14 @@ public class HomePageResponseDto {
                                CalendarSectionDto calendar,
                                List<Friend> friends,
                                Badge tier,
+                               Badge nextTier,
                                List<Badge> badges,
                                Badge pfp) {
         // HomeSection
        this.home = new HomeSectionDto(user, badges, pfp);
 
         // Achievement Section
-        this.achievement = new AchievementSectionDto(user, tier);
+        this.achievement = new AchievementSectionDto(user, tier, nextTier);
 
         // Today's To Do Section
         for (Plan plan : plans) {

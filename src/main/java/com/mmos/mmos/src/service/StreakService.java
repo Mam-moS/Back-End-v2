@@ -22,12 +22,14 @@ import static com.mmos.mmos.config.HttpResponseStatus.*;
 public class StreakService {
     private final StreakRepository streakRepository;
     private final UserService userService;
+    private final PlannerService plannerService;
 
     public List<Streak> findStreaks60Days(User user) throws BaseException {
         return streakRepository.findTop60ByUserOrderByStreakIndexDesc(user)
                 .orElseThrow(() -> new EmptyEntityException(EMPTY_STREAK));
     }
 
+    @Transactional
     public void updateTopStreak(User user) {
         if (user.getUserTopStreak() < user.getUserCurrentStreak())
             user.updateTopStreak(user.getUserCurrentStreak());
@@ -37,60 +39,68 @@ public class StreakService {
     public void saveStreak(Long userIdx) throws BaseException {
         try {
             User user = userService.getUser(userIdx);
+            LocalDate today = LocalDate.now();
             LocalDate beforeDay = LocalDate.now().minusDays(1);
 
+            // 오늘자 스트릭 생성
+            Streak todayStreak = null;
+            Streak beforeDayStreak = null;
+            boolean isExist = false;
             for (Streak streak : user.getStreaks()) {
-                if (streak.getStreakDate().equals(beforeDay))
-                    throw new DuplicateRequestException(ALREADY_EXIST_STREAK);
+                if (streak.getStreakDate().equals(today)) {
+                    todayStreak = streak;
+                    isExist = true;
+                } else if (streak.getStreakDate().equals(beforeDay)) {
+                    beforeDayStreak = streak;
+                }
+            }
+            if (!isExist) {
+                todayStreak = streakRepository.save(new Streak(0, today, user));
+                user.addStreak(todayStreak);
             }
 
+            // 전날 스트릭 체크 -> currentStreak 반영
+            // 오늘 가입하거나 어제 스트릭 레벨이 0이라면 currentStreak 초기화
+            if (beforeDayStreak != null && !beforeDayStreak.isChecked()) {
+                if (beforeDayStreak.getStreakLevel() == 0) {
+                    user.resetCurrentStreak();
+                    beforeDayStreak.updateChecked(true);
+                }
+                // 어제 스트릭을 채웠다면 currentStreak + 1
+                else {
+                    user.plusCurrentStreak();
+                    updateTopStreak(user);
+                    beforeDayStreak.updateChecked(true);
+                }
+            } else if (beforeDayStreak == null) {
+                user.resetCurrentStreak();
+            }
+
+            // 오늘자 플래너 가져오기
             Planner planner = null;
             for (Calendar userCalendar : user.getUserCalendars()) {
-                boolean flag = false;
-                if (userCalendar.getCalendarYear().equals(beforeDay.getYear()) &&
-                        userCalendar.getCalendarMonth().equals(beforeDay.getMonthValue())) {
-                    for (Planner calendarPlanner : userCalendar.getCalendarPlanners()) {
-                        if (calendarPlanner.getPlannerDate().equals(beforeDay)) {
-                            planner = calendarPlanner;
-                            flag = true;
-                            break;
-                        }
-                    }
+                // 이번 달 캘린더 가져오기
+                if (userCalendar.getCalendarYear().equals(today.getYear())
+                        && userCalendar.getCalendarMonth().equals(today.getMonthValue())) {
+                    planner = plannerService.getPlannerByCalendarAndDate(userCalendar.getCalendarIndex(), today);
                 }
-
-                if (flag)
-                    break;
             }
 
-
-            if (planner == null) {
-                user.resetCurrentStreak();
-                Streak streak = streakRepository.save(new Streak(0, beforeDay, user));
-                user.addStreak(streak);
-            } else {
+            // 오늘자 스트릭 패치
+            if (planner != null) {
                 if (planner.getPlannerDailyStudyTime() >= 5 * 60) {
-                    user.plusCurrentStreak();
-                    updateTopStreak(user);
-                    Streak streak = streakRepository.save(new Streak(3, beforeDay, user));
-                    user.addStreak(streak);
+                    todayStreak.updateStreak(3);
                 } else if (planner.getPlannerDailyStudyTime() >= 3 * 60) {
-                    user.plusCurrentStreak();
-                    updateTopStreak(user);
-                    Streak streak = streakRepository.save(new Streak(2, beforeDay, user));
-                    user.addStreak(streak);
-                } else if (planner.getPlannerDailyStudyTime() >= 60) {
-                    user.plusCurrentStreak();
-                    updateTopStreak(user);
-                    Streak streak = streakRepository.save(new Streak(1, beforeDay, user));
-                    user.addStreak(streak);
+                    todayStreak.updateStreak(2);
+                } else if (planner.getPlannerDailyStudyTime() > 60) {
+                    todayStreak.updateStreak(1);
                 } else {
-                    user.resetCurrentStreak();
-                    Streak streak = streakRepository.save(new Streak(0, beforeDay, user));
-                    user.addStreak(streak);
+                    todayStreak.updateStreak(0);
                 }
             }
+
         } catch (EmptyEntityException |
-                DuplicateRequestException e) {
+                 DuplicateRequestException e) {
             throw e;
         } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);

@@ -21,6 +21,9 @@ public class Streak {
     @Column
     private LocalDate streakDate;
 
+    @Column
+    private boolean isChecked = false;
+
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "userIndex")
@@ -30,5 +33,13 @@ public class Streak {
         this.streakLevel = streakLevel;
         this.streakDate = streakDate;
         this.user = user;
+    }
+
+    public void updateStreak(Integer level) {
+        this.streakLevel = level;
+    }
+
+    public void updateChecked(boolean isChecked) {
+        this.isChecked = isChecked;
     }
 }

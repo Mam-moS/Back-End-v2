@@ -3,6 +3,7 @@ package com.mmos.mmos.src.service;
 import com.mmos.mmos.config.exception.BaseException;
 import com.mmos.mmos.config.exception.EmptyEntityException;
 import com.mmos.mmos.src.domain.entity.Badge;
+import com.mmos.mmos.src.domain.entity.User;
 import com.mmos.mmos.src.repository.BadgeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -46,6 +47,18 @@ public class BadgeService {
         }
     }
 
+    @Transactional
+    public Badge getNextTier(Long tierIdx) throws BaseException {
+        try {
+            if(tierIdx == 6)
+                return findBadgeByIdx(tierIdx);
+            return findBadgeByIdx(tierIdx + 1);
+        } catch (EmptyEntityException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 
     // 휘장 전체 조회 = badge
     // 티어 전체 조회 = tier

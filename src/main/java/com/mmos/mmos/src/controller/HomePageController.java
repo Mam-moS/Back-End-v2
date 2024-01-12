@@ -30,6 +30,7 @@ public class HomePageController extends BaseController {
     private final PlanService planService;
     private final UserBadgeService userBadgeService;
     private final StreakService streakService;
+    private final BadgeService badgeService;
 
     @GetMapping("")
     public ResponseEntity<ResponseApiMessage> getPage(@AuthenticationPrincipal User tokenUser) {
@@ -78,6 +79,7 @@ public class HomePageController extends BaseController {
 
             // 티어 찾기
             Badge tier = userBadgeService.getRepresentBadges(userIdx, "tier").get(0).getBadge();
+            Badge nextTier = badgeService.getNextTier(tier.getBadgeIndex());
             // 뱃지 찾기
             List<UserBadge> userBadges = userBadgeService.getRepresentBadges(userIdx, "badge");
             List<Badge> badges = new ArrayList<>();
@@ -87,7 +89,7 @@ public class HomePageController extends BaseController {
             // 프사 찾기
             Badge pfp = userBadgeService.getRepresentBadges(userIdx, "pfp").get(0).getBadge();
 
-            return sendResponseHttpByJson(SUCCESS, "페이지 로드 성공", new HomePageResponseDto(user, plans, calendar, friends, tier, badges, pfp));
+            return sendResponseHttpByJson(SUCCESS, "페이지 로드 성공", new HomePageResponseDto(user, plans, calendar, friends, tier, nextTier, badges, pfp));
         } catch (BaseException e) {
             return sendResponseHttpByJson(e.getStatus(), e.getStatus().getMessage(), null);
         }

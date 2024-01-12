@@ -34,7 +34,7 @@ public class AchievementSectionDto {
     // 최근 60일 스트릭 엔티티 조회
     private List<Streak> streakList = new ArrayList<>();
 
-    public AchievementSectionDto(User user, Badge tier) {
+    public AchievementSectionDto(User user, Badge tier, Badge nextTier) {
         this.tierIcon = tier.getBadgeIcon();
         this.tierName = tier.getBadgeName();
         this.tierDistribution = tier.getBadgeInfo();
@@ -50,7 +50,7 @@ public class AchievementSectionDto {
         } else {
             this.tierProgress = (int) (((user.getUserTotalStudyTime() * 4) // 공부시간 * 4
                     + ((100 + totalCompleteSchedules/totalSchedules * 100) / 100) * totalCompleteSchedules) * 100 // (1 + 완수율) * 완수 개수
-                    / tier.getBadgeExp());  // 획득 EXP / 티어 EXP * 100
+                    / nextTier.getBadgeExp());  // 획득 EXP / 티어 EXP * 100
         }
     }
 }
