@@ -69,19 +69,4 @@ public class FileService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
-
-    public List<File> getFiles(List<Long> fileIndex) throws BaseException {
-        try {
-            List<File> result = new ArrayList<>();
-            for (Long index : fileIndex) {
-                result.add(findById(index));
-            }
-
-            return result;
-        } catch (BaseException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
 }

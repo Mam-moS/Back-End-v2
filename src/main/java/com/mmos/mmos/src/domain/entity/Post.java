@@ -56,17 +56,15 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<File> files = new ArrayList<>();
 
-    public Post(PostSaveRequestDto postSaveRequestDto, User user, Study study, Timestamp postCreatedAt, Timestamp postUpdatedAt, List<File> files) {
+    public Post(PostSaveRequestDto postSaveRequestDto, User user, Study study, Timestamp postCreatedAt, Timestamp postUpdatedAt) {
         this.postIsNotice = postSaveRequestDto.getIsNotice();
         this.postTitle = postSaveRequestDto.getPostTitle();
         this.postContents = postSaveRequestDto.getPostContents();
-        this.postImage = postSaveRequestDto.getPostImage();
         this.postWriterIndex = user.getUserIndex();
         this.postWriterName = user.getUsername();
         this.study = study;
         this.postCreatedAt = postCreatedAt;
         this.postUpdatedAt = postUpdatedAt;
-        this.files = files;
     }
 
     public void addFile(File file) {

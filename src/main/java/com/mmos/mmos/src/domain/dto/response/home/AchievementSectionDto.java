@@ -45,13 +45,12 @@ public class AchievementSectionDto {
         this.topStreakDays = user.getUserTopStreak();
         this.streakList = user.getStreaks();
 
-        if(user.getUserTotalScheduleNum().equals(0L))
+        if(user.getUserTotalScheduleNum().equals(0L)){
             this.tierProgress = (int) (user.getUserTotalStudyTime() * 4);
-        else
-            this.tierProgress = (int) ((user.getUserTotalStudyTime() * 4)
-                                    + (user.getUserTotalCompletedScheduleNum()
-                                    * (100 + ((user.getUserTotalCompletedScheduleNum() * 100)
-                                    / user.getUserTotalScheduleNum()))) / 100
-            );
+        } else {
+            this.tierProgress = (int) (((user.getUserTotalStudyTime() * 4) // 공부시간 * 4
+                    + ((100 + totalCompleteSchedules/totalSchedules * 100) / 100) * totalCompleteSchedules) * 100 // (1 + 완수율) * 완수 개수
+                    / tier.getBadgeExp());  // 획득 EXP / 티어 EXP * 100
+        }
     }
 }

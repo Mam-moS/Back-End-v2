@@ -2,6 +2,7 @@ package com.mmos.mmos.src.domain.dto.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -11,7 +12,5 @@ public class PostSaveRequestDto {
 
     private String postTitle;
     private String postContents;
-    private String postImage;
     private Boolean isNotice;
-    private List<Long> fileIndex;
 }

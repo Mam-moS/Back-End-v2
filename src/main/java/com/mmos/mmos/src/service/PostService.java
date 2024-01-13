@@ -53,13 +53,9 @@ public class PostService {
 
             User user = userStudy.getUser();
             Study study = userStudy.getStudy();
-            List<File> files = new ArrayList<>();
-            if(!postSaveRequestDto.getFileIndex().isEmpty()) {
-                files = fileService.getFiles(postSaveRequestDto.getFileIndex());
-            }
 
             // Post 생성/매핑
-            Post post = new Post(postSaveRequestDto, user, study, new Timestamp(System.currentTimeMillis()), null, files);
+            Post post = new Post(postSaveRequestDto, user, study, new Timestamp(System.currentTimeMillis()), null);
             study.addPost(post);
 
             return postRepository.save(post);
@@ -85,9 +81,6 @@ public class PostService {
                 isEdit = true;
             } if(requestDto.getPostContents() != null) {
                 post.updateContents(requestDto.getPostContents().toLowerCase());
-                isEdit = true;
-            } if(requestDto.getPostImage() != null) {
-                post.updateImage(requestDto.getPostImage());
                 isEdit = true;
             } if(isEdit) {
                 post.updateWriter(userStudy.getUser());
