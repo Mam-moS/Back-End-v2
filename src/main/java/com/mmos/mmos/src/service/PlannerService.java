@@ -64,7 +64,7 @@ public class PlannerService {
         try {
             return findPlannerByCalendarIdxAndDay(calendarIdx, day);
         } catch (EmptyEntityException e) {
-            throw e;
+            return savePlanner(calendarIdx, day);
         } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);
         }
