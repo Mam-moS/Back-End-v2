@@ -7,7 +7,7 @@ import com.mmos.mmos.src.domain.dto.request.CalendarGetRequestDto;
 import com.mmos.mmos.src.domain.dto.response.home.CalendarSectionDto;
 import com.mmos.mmos.src.domain.entity.Calendar;
 import com.mmos.mmos.src.domain.entity.Project;
-import com.mmos.mmos.src.domain.entity.User;
+import com.mmos.mmos.src.domain.entity.Users;
 import com.mmos.mmos.src.repository.CalendarRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -40,7 +40,7 @@ public class CalendarService {
     @Transactional
     public Calendar saveCalendar(Integer year, Integer month, Long userIdx) throws BaseException {
         try {
-            User user = userService.getUser(userIdx);
+            Users user = userService.getUser(userIdx);
 
             // 막 회원 가입을 한 유저가 아니면서 같은 달의 캘린더가 이미 존재할 때 생성 막기
             if (!user.getUserCalendars().isEmpty()) {
@@ -76,7 +76,7 @@ public class CalendarService {
     public CalendarSectionDto getCalendar(Long userIdx, CalendarGetRequestDto calendarGetRequestDto) throws BaseException {
         // User 가져오기
         try {
-            User user = userService.getUser(userIdx);
+            Users user = userService.getUser(userIdx);
 
             // Calendar 가져오기
             boolean isExist = false;

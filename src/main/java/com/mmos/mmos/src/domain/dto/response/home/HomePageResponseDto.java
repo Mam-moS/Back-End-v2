@@ -3,7 +3,7 @@ package com.mmos.mmos.src.domain.dto.response.home;
 import com.mmos.mmos.src.domain.entity.Badge;
 import com.mmos.mmos.src.domain.entity.Friend;
 import com.mmos.mmos.src.domain.entity.Plan;
-import com.mmos.mmos.src.domain.entity.User;
+import com.mmos.mmos.src.domain.entity.Users;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -20,7 +20,7 @@ public class HomePageResponseDto {
     private CalendarSectionDto calendar;
     private List<FriendSectionDto> friend = new ArrayList<>();
 
-    public HomePageResponseDto(User user,
+    public HomePageResponseDto(Users user,
                                List<Plan> plans,
                                CalendarSectionDto calendar,
                                List<Friend> friends,

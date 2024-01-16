@@ -9,7 +9,7 @@ import com.mmos.mmos.src.domain.dto.request.PlanUpdateRequestDto;
 import com.mmos.mmos.src.domain.entity.Calendar;
 import com.mmos.mmos.src.domain.entity.Plan;
 import com.mmos.mmos.src.domain.entity.Planner;
-import com.mmos.mmos.src.domain.entity.User;
+import com.mmos.mmos.src.domain.entity.Users;
 import com.mmos.mmos.src.repository.PlanRepository;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -61,7 +61,7 @@ public class PlanService {
             Plan plan = findPlanByIdx(planIdx);
             Planner planner = plan.getPlanner();
             Calendar calendar = planner.getCalendar();
-            User user = planner.getCalendar().getUser();
+            Users user = planner.getCalendar().getUser();
 
             // 업데이트
             if(plan.getPlanIsComplete()) {
@@ -116,7 +116,7 @@ public class PlanService {
 
             Planner planner = plan.getPlanner();
             Calendar calendar = planner.getCalendar();
-            User user = calendar.getUser();
+            Users user = calendar.getUser();
 
             if(plan.getStudytimeStartTime() == null) {
                 // 계획 시작 시간 설정
@@ -154,7 +154,7 @@ public class PlanService {
             Plan plan = findPlanByIdx(planIdx);
             Planner planner = plan.getPlanner();
             Calendar calendar = planner.getCalendar();
-            User user = calendar.getUser();
+            Users user = calendar.getUser();
 
             planner.minusTime(plan.getPlanStudyTime());
             calendar.minusTime(plan.getPlanStudyTime());

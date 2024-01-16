@@ -140,7 +140,7 @@ public enum HttpResponseStatus {
     PROJECT_FULL_VISIBLE(false,BAD_REQUEST.value(),"더 이상 추가할 수 없습니다."),
     EMPTY_PROJECT(false,BAD_REQUEST.value(),"존재하지 않는 프로젝트입니다."),
 
-    // File
+    // Files
     EMPTY_FILE(false,BAD_REQUEST.value(),"존재하지 않는 파일입니다."),
 
     /**

@@ -1,6 +1,6 @@
 package com.mmos.mmos.src.domain.dto.response.home;
 
-import com.mmos.mmos.src.domain.entity.User;
+import com.mmos.mmos.src.domain.entity.Users;
 import com.mmos.mmos.src.domain.entity.UserBadge;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +18,7 @@ public class FriendSectionDto {
     // 친구 오늘 공부 시간 (시:분)
     Long todayStudyTime;
 
-    public FriendSectionDto(User friend) {
+    public FriendSectionDto(Users friend) {
         this.id = friend.getUserId();
         this.name = friend.getName();
         this.todayStudyTime = friend.getUserTotalStudyTime();

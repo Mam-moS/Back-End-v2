@@ -1,7 +1,7 @@
 package com.mmos.mmos.src.domain.dto.response.social;
 
 import com.mmos.mmos.src.domain.entity.Friend;
-import com.mmos.mmos.src.domain.entity.User;
+import com.mmos.mmos.src.domain.entity.Users;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -15,8 +15,8 @@ public class SocialPageResponseDto {
     List<FriendSectionDto> friend = new ArrayList<>();
     Integer friendRequestNum;
 
-    public SocialPageResponseDto(List<Friend> friends, List<User> top3, Integer requestNum) {
-        for (User user : top3) {
+    public SocialPageResponseDto(List<Friend> friends, List<Users> top3, Integer requestNum) {
+        for (Users user : top3) {
             this.ranking.add(new RankingSectionDto(user));
         }
 

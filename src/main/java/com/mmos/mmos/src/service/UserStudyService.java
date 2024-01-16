@@ -2,7 +2,7 @@ package com.mmos.mmos.src.service;
 
 import com.mmos.mmos.config.exception.*;
 import com.mmos.mmos.src.domain.entity.Study;
-import com.mmos.mmos.src.domain.entity.User;
+import com.mmos.mmos.src.domain.entity.Users;
 import com.mmos.mmos.src.domain.entity.UserStudy;
 import com.mmos.mmos.src.repository.UserStudyRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,13 +18,13 @@ public class UserStudyService {
     private final UserService userService;
     private final StudyService studyService;
 
-    public UserStudy findUserStudyByStudyAndUser(Study study, User user) throws BaseException {
+    public UserStudy findUserStudyByStudyAndUser(Study study, Users user) throws BaseException {
         return userStudyRepository.findUserStudyByStudyAndUser(study, user)
                 .orElseThrow(() -> new EmptyEntityException(EMPTY_USERSTUDY));
     }
 
     public UserStudy findUserStudyByIdx(Long userStudyIdx) throws BaseException {
-        return userStudyRepository.findById(userStudyIdx)
+        return userStudyRepository.findByUserStudyIndex(userStudyIdx)
                 .orElseThrow(() -> new EmptyEntityException(EMPTY_USERSTUDY));
     }
 
@@ -54,6 +54,7 @@ public class UserStudyService {
         try {
             return findUserStudyByIdx(userStudyIdx);
         } catch (EmptyEntityException e) {
+            e.printStackTrace();
             throw new BaseException(e.getStatus());
         } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);
@@ -66,7 +67,7 @@ public class UserStudyService {
         try {
             // userStudyIdx가 리더의 것인지 확인
             UserStudy leaderUserStudy = findUserStudyByIdx(userStudyIdx);
-            if(!leaderUserStudy.getUserstudyMemberStatus().equals(1))
+            if(!leaderUserStudy.getUserStudyMemberStatus().equals(1))
                 throw new NotAuthorizedAccessException(USERSTUDY_INVALID_REQUEST);
 
             // 인원 수가 충분한지 체크
@@ -74,7 +75,7 @@ public class UserStudyService {
                 throw new OutOfRangeException(USERSTUDY_MEMBER_LIMIT_FULL);
 
             // 이미 멤버인지 혹은 보내거나 받은 요청이 있는지 체크
-            User user = userService.findUserById(id);
+            Users user = userService.findUserById(id);
             UserStudy userStudy;
             try {
                 userStudy = findUserStudyByStudyAndUser(leaderUserStudy.getStudy(), user);
@@ -106,7 +107,7 @@ public class UserStudyService {
         try {
             // 객체 불러오기
             Study study = studyService.getStudy(studyIdx);
-            User user = userService.getUser(userIdx);
+            Users user = userService.getUser(userIdx);
             // 인원 수가 충분한지 체크
             if(study.getStudyMemberLimit() <= study.getStudyMemberNum()) {
                 throw new OutOfRangeException(USERSTUDY_MEMBER_LIMIT_FULL);
@@ -140,7 +141,7 @@ public class UserStudyService {
             if(isAdmin) {
                 System.out.println("adminUserStudyIdx = " + adminUserStudyIdx);
                 UserStudy adminUserStudy = findUserStudyByIdx(adminUserStudyIdx);
-                if(!adminUserStudy.getUserstudyMemberStatus().equals(1))
+                if(!adminUserStudy.getUserStudyMemberStatus().equals(1))
                     throw new NotAuthorizedAccessException(NOT_AUTHORIZED);
             }
             UserStudy targetUserStudy = findUserStudyByIdx(targetUserStudyIdx);
@@ -160,7 +161,7 @@ public class UserStudyService {
         try {
             if(isAdmin) {
                 UserStudy adminUserStudy = findUserStudyByIdx(adminUserStudyIdx);
-                if(!adminUserStudy.getUserstudyMemberStatus().equals(1))
+                if(!adminUserStudy.getUserStudyMemberStatus().equals(1))
                     throw new NotAuthorizedAccessException(NOT_AUTHORIZED);
             }
 
@@ -168,7 +169,7 @@ public class UserStudyService {
             if(targetUserStudy.getStudy().getStudyMemberLimit() <= targetUserStudy.getStudy().getStudyMemberNum())
                 throw new OutOfRangeException(USERSTUDY_MEMBER_LIMIT_FULL);
 
-            if(targetUserStudy.getUserstudyMemberStatus() >= 3 &&
+            if(targetUserStudy.getUserStudyMemberStatus() >= 3 &&
                     memberStatus <= 2)
                 updateStudyNum(targetUserStudy, true);
             targetUserStudy.updateMemberStatus(memberStatus);

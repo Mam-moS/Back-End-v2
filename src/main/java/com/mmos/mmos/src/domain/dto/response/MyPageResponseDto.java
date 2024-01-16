@@ -1,6 +1,6 @@
 package com.mmos.mmos.src.domain.dto.response;
 
-import com.mmos.mmos.src.domain.entity.User;
+import com.mmos.mmos.src.domain.entity.Users;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,7 +16,7 @@ public class MyPageResponseDto {
     private String email;
     private boolean isPublic;
 
-    public MyPageResponseDto(User user, String pfp) {
+    public MyPageResponseDto(Users user, String pfp) {
         this.userIdx = user.getUserIndex();
         this.pfp = pfp;
         this.id = user.getUserId();

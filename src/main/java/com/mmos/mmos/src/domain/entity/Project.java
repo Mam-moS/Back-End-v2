@@ -53,7 +53,7 @@ public class Project {
 
     @JsonBackReference
     @ManyToOne
-    private User user;
+    private Users user;
 
     public void updateProjectName(String newName){
         this.projectName = newName;
@@ -71,7 +71,7 @@ public class Project {
         this.projectIsVisible = isVisible;
     }
 
-    public Project(ProjectSaveRequestDto requestDto, User user, Study study, Long projectNumber) {
+    public Project(ProjectSaveRequestDto requestDto, Users user, Study study, Long projectNumber) {
         this.projectStartTime = requestDto.getStartTime();
         this.projectEndTime = requestDto.getEndTime();
         this.projectName = requestDto.getName();
@@ -83,7 +83,7 @@ public class Project {
         this.projectNumber = projectNumber;
     }
 
-    public Project(ProjectSaveRequestDto requestDto, User user) {
+    public Project(ProjectSaveRequestDto requestDto, Users user) {
         this.projectStartTime = requestDto.getStartTime();
         this.projectEndTime = requestDto.getEndTime();
         this.projectName = requestDto.getName();

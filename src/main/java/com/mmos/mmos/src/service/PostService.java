@@ -5,6 +5,7 @@ import com.mmos.mmos.config.exception.EmptyEntityException;
 import com.mmos.mmos.config.exception.NotAuthorizedAccessException;
 import com.mmos.mmos.src.domain.dto.request.PostSaveRequestDto;
 import com.mmos.mmos.src.domain.dto.response.study.NoticeSectionDto;
+import com.mmos.mmos.src.domain.dto.response.study.PostTabResponseDto;
 import com.mmos.mmos.src.domain.dto.response.study.PromotionSectionDto;
 import com.mmos.mmos.src.domain.entity.*;
 import com.mmos.mmos.src.repository.PostRepository;
@@ -34,8 +35,13 @@ public class PostService {
                 .orElseThrow(() -> new EmptyEntityException(EMPTY_POST));
     }
 
-    public List<Post> findPostsByPostIsNotice() throws BaseException {
+    public List<Post> findPostsByPromotionPost() throws BaseException {
         return postRepository.findPostsByPostIsNoticeIsFalse()
+                .orElseThrow(() -> new EmptyEntityException(EMPTY_POST));
+    }
+
+    public List<Post> findPostsByNoticePost() throws BaseException {
+        return postRepository.findPostsByPostIsNoticeIsTrue()
                 .orElseThrow(() -> new EmptyEntityException(EMPTY_POST));
     }
 
@@ -48,10 +54,10 @@ public class PostService {
     public Post savePost(Long userStudyIdx, PostSaveRequestDto postSaveRequestDto) throws BaseException {
         try {
             UserStudy userStudy = userStudyService.getUserStudy(userStudyIdx);
-            if (!userStudy.getUserstudyMemberStatus().equals(1))
+            if (!userStudy.getUserStudyMemberStatus().equals(1))
                 throw new NotAuthorizedAccessException(NOT_AUTHORIZED);
 
-            User user = userStudy.getUser();
+            Users user = userStudy.getUser();
             Study study = userStudy.getStudy();
 
             // Post 생성/매핑
@@ -70,7 +76,7 @@ public class PostService {
     public Post updatePost(Long postIdx, Long userStudyIdx, PostSaveRequestDto requestDto) throws BaseException {
         try {
             UserStudy userStudy = userStudyService.getUserStudy(userStudyIdx);
-            if(!userStudy.getUserstudyMemberStatus().equals(1))
+            if(!userStudy.getUserStudyMemberStatus().equals(1))
                 throw new NotAuthorizedAccessException(NOT_AUTHORIZED);
 
             Post post = findPostByIdx(postIdx);
@@ -113,7 +119,7 @@ public class PostService {
     public Page<PromotionSectionDto> getPromotions(Pageable pageable) throws BaseException {
         try {
             List<PromotionSectionDto> responseDtoList = new ArrayList<>();
-            List<Post> posts = findPostsByPostIsNotice();
+            List<Post> posts = findPostsByPromotionPost();
 
             for (Post post : posts) {
                 responseDtoList.add(new PromotionSectionDto(post));
@@ -127,18 +133,39 @@ public class PostService {
         }
     }
 
-    // 내 스터디 공지 게시글 조회
+    // 내 스터디 공지 게시글 조회 (페이징 버전)
+//    @Transactional
+//    public Page<NoticeSectionDto> getNotices(UserStudy userStudy, Pageable pageable) throws BaseException {
+//        try {
+//            List<NoticeSectionDto> responseDtoList = new ArrayList<>();
+//            Study study = userStudy.getStudy();
+//
+//            for (Post studyPost : study.getStudyPosts()) {
+//                responseDtoList.add(new NoticeSectionDto(studyPost));
+//            }
+//
+//            return new PageImpl<>(responseDtoList, pageable, responseDtoList.size());
+//        } catch (Exception e) {
+//            throw new BaseException(DATABASE_ERROR);
+//        }
+//    }
+
+    // 내 스터디 공지 게시글 조회 (리스트 버전)
     @Transactional
-    public Page<NoticeSectionDto> getNotices(UserStudy userStudy, Pageable pageable) throws BaseException {
+    public PostTabResponseDto getStudyPosts(UserStudy userStudy) throws BaseException {
         try {
-            List<NoticeSectionDto> responseDtoList = new ArrayList<>();
+            List<NoticeSectionDto> notices = new ArrayList<>();
+            List<PromotionSectionDto> promotions = new ArrayList<>();
             Study study = userStudy.getStudy();
 
             for (Post studyPost : study.getStudyPosts()) {
-                responseDtoList.add(new NoticeSectionDto(studyPost));
+                if(studyPost.getPostIsNotice())
+                    notices.add(new NoticeSectionDto(studyPost));
+                else
+                    promotions.add(new PromotionSectionDto(studyPost));
             }
 
-            return new PageImpl<>(responseDtoList, pageable, responseDtoList.size());
+            return new PostTabResponseDto(notices, promotions);
         } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);
         }
@@ -149,7 +176,7 @@ public class PostService {
     public void deletePost(Long postIdx, Long userStudyIdx) throws BaseException {
         try {
             UserStudy userStudy = userStudyService.getUserStudy(userStudyIdx);
-            if (!userStudy.getUserstudyMemberStatus().equals(1))
+            if (!userStudy.getUserStudyMemberStatus().equals(1))
                 throw new NotAuthorizedAccessException(NOT_AUTHORIZED);
 
             Post post = findPostByIdx(postIdx);

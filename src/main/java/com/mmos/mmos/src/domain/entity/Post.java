@@ -54,9 +54,9 @@ public class Post {
 
     @JsonManagedReference
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<File> files = new ArrayList<>();
+    private List<Files> files = new ArrayList<>();
 
-    public Post(PostSaveRequestDto postSaveRequestDto, User user, Study study, Timestamp postCreatedAt, Timestamp postUpdatedAt) {
+    public Post(PostSaveRequestDto postSaveRequestDto, Users user, Study study, Timestamp postCreatedAt, Timestamp postUpdatedAt) {
         this.postIsNotice = postSaveRequestDto.getIsNotice();
         this.postTitle = postSaveRequestDto.getPostTitle();
         this.postContents = postSaveRequestDto.getPostContents();
@@ -67,7 +67,7 @@ public class Post {
         this.postUpdatedAt = postUpdatedAt;
     }
 
-    public void addFile(File file) {
+    public void addFile(Files file) {
         this.files.add(file);
     }
 
@@ -75,7 +75,7 @@ public class Post {
         this.postUpdatedAt = now;
     }
 
-    public void updateWriter(User user) {
+    public void updateWriter(Users user) {
         this.postWriterIndex = user.getUserIndex();
         this.postWriterName = user.getUsername();
     }

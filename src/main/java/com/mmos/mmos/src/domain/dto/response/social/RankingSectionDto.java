@@ -1,6 +1,6 @@
 package com.mmos.mmos.src.domain.dto.response.social;
 
-import com.mmos.mmos.src.domain.entity.User;
+import com.mmos.mmos.src.domain.entity.Users;
 import com.mmos.mmos.src.domain.entity.UserBadge;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +19,7 @@ public class RankingSectionDto {
     // 이번 주 공부 시간
     Long WeeklyStudyTime;
 
-    public RankingSectionDto(User user) {
+    public RankingSectionDto(Users user) {
         for (UserBadge userUserbadge : user.getUserUserbadges()) {
             if (userUserbadge.getBadge().getBadgePurpose().equals("pfp") && userUserbadge.getUserbadgeIsVisible())
                 this.pfp = userUserbadge.getBadge().getBadgeIcon();

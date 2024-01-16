@@ -2,7 +2,7 @@ package com.mmos.mmos.src.domain.dto.response.home;
 
 import com.mmos.mmos.src.domain.entity.Badge;
 import com.mmos.mmos.src.domain.entity.Streak;
-import com.mmos.mmos.src.domain.entity.User;
+import com.mmos.mmos.src.domain.entity.Users;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -34,7 +34,7 @@ public class AchievementSectionDto {
     // 최근 60일 스트릭 엔티티 조회
     private List<Streak> streakList = new ArrayList<>();
 
-    public AchievementSectionDto(User user, Badge tier, Badge nextTier) {
+    public AchievementSectionDto(Users user, Badge tier, Badge nextTier) {
         this.tierIcon = tier.getBadgeIcon();
         this.tierName = tier.getBadgeName();
         this.tierDistribution = tier.getBadgeInfo();

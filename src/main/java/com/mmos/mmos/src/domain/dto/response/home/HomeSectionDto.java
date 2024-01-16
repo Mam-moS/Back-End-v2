@@ -1,7 +1,7 @@
 package com.mmos.mmos.src.domain.dto.response.home;
 
 import com.mmos.mmos.src.domain.entity.Badge;
-import com.mmos.mmos.src.domain.entity.User;
+import com.mmos.mmos.src.domain.entity.Users;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -27,7 +27,7 @@ public class HomeSectionDto {
     // 도전과제 뱃지 이미지
     private List<String> badgeIcon = new ArrayList<>();
 
-    public HomeSectionDto(User user, List<Badge> badges, Badge pfp) {
+    public HomeSectionDto(Users user, List<Badge> badges, Badge pfp) {
         this.id = user.getUserId();
         this.name = user.getName();
         this.pfp = pfp.getBadgeIcon();

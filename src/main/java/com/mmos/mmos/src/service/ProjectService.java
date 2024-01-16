@@ -5,10 +5,9 @@ import com.mmos.mmos.src.domain.dto.request.CalendarGetRequestDto;
 import com.mmos.mmos.src.domain.dto.request.ProjectSaveRequestDto;
 import com.mmos.mmos.src.domain.dto.request.ProjectUpdateRequestDto;
 import com.mmos.mmos.src.domain.dto.response.home.CalendarSectionDto;
-import com.mmos.mmos.src.domain.entity.Calendar;
-import com.mmos.mmos.src.domain.entity.Project;
-import com.mmos.mmos.src.domain.entity.Study;
-import com.mmos.mmos.src.domain.entity.User;
+import com.mmos.mmos.src.domain.dto.response.study.Member;
+import com.mmos.mmos.src.domain.dto.response.study.ProjectTabResponseDto;
+import com.mmos.mmos.src.domain.entity.*;
 import com.mmos.mmos.src.repository.ProjectRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,6 +32,10 @@ public class ProjectService {
                 .orElseThrow(() -> new EmptyEntityException(EMPTY_PROJECT));
     }
 
+    public List<Project> findProjectsByUserAndStudy(Users user, Study study) throws BaseException {
+        return projectRepository.findAllByUserAndStudy(user, study);
+    }
+
     @Transactional
     public Project getProject(Long projectIdx) throws BaseException {
         try {
@@ -48,7 +51,7 @@ public class ProjectService {
     public List<Project> getProjects(Long calendarIdx, Integer day) throws BaseException {
         try {
             Calendar calendar = calendarService.findCalendarByIdx(calendarIdx);
-            User user = calendar.getUser();
+            Users user = calendar.getUser();
 
             List<Project> projects = user.getUserProjects();
 
@@ -76,7 +79,7 @@ public class ProjectService {
     }
 
     @Transactional
-    public Project saveProject(ProjectSaveRequestDto requestDto, User user, boolean isStudy, Long studyNum) throws BaseException {
+    public Project saveProject(ProjectSaveRequestDto requestDto, Users user, boolean isStudy, Long studyNum) throws BaseException {
         try {
             LocalDate startTime = requestDto.getStartTime();
             LocalDate endTime = requestDto.getEndTime();
@@ -117,7 +120,7 @@ public class ProjectService {
     public Project updateProjectIsVisible(Long projectIdx) throws BaseException {
         try {
             Project project = findProjectByIdx(projectIdx);
-            User user = project.getUser();
+            Users user = project.getUser();
 
             if (project.getProjectIsVisible()) {
                 project.updateProjectIsVisible(false);
@@ -174,7 +177,7 @@ public class ProjectService {
             if (isStudyPage) {
                 if (!project.getProjectIsStudy())
                     throw new BusinessLogicException(BUSINESS_LOGIC_ERROR);
-                if (!userStudyService.getUserStudy(adminUserStudyIdx).getUserstudyMemberStatus().equals(1))
+                if (!userStudyService.getUserStudy(adminUserStudyIdx).getUserStudyMemberStatus().equals(1))
                     throw new NotAuthorizedAccessException(NOT_AUTHORIZED);
             } else if (project.getProjectIsStudy())
                 throw new BusinessLogicException(BUSINESS_LOGIC_ERROR);
@@ -252,6 +255,47 @@ public class ProjectService {
             project.updateIsAttend();
         } catch (EmptyEntityException e) {
             throw e;
+        } catch (Exception e) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    @Transactional
+    public List<Project> getMyStudyAttendProjects(UserStudy userStudy) throws BaseException {
+        try {
+            Users user = userStudy.getUser();
+            Study study = userStudy.getStudy();
+
+            return findProjectsByUserAndStudy(user, study);
+        } catch (Exception e) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    @Transactional
+    public List<ProjectTabResponseDto> getMyStudyProjects(Study study) throws BaseException {
+        try {
+            List<ProjectTabResponseDto> result = new ArrayList<>();
+            List<Project> projects = study.getStudyProjects();
+
+            int num = 1;
+            for (Project project : projects) {
+                if (project.getProjectNumber() == num) {
+                    List<Member> members = new ArrayList<>();
+
+                    // 같은 number의 프로젝트들 iter
+                    for (Project memberProject : projects) {
+                        if(memberProject.getProjectNumber() == num) {
+                            members.add(new Member(memberProject.getUser()));
+                        }
+                    }
+
+                    result.add(new ProjectTabResponseDto(project, members));
+                    num++;
+                }
+            }
+
+            return result;
         } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);
         }

@@ -42,9 +42,9 @@ public class Calendar {
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "userIndex")
-    private User user;
+    private Users user;
 
-    public Calendar(int year, int month, User user) {
+    public Calendar(int year, int month, Users user) {
         this.calendarYear = year;
         this.calendarMonth = month;
         this.user = user;

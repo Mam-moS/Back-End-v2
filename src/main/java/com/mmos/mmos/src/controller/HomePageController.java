@@ -33,7 +33,7 @@ public class HomePageController extends BaseController {
     private final BadgeService badgeService;
 
     @GetMapping("")
-    public ResponseEntity<ResponseApiMessage> getPage(@AuthenticationPrincipal User tokenUser) {
+    public ResponseEntity<ResponseApiMessage> getPage(@AuthenticationPrincipal Users tokenUser) {
         try {
             Long userIdx = tokenUser.getUserIndex();
             // 기본 쿼리
@@ -46,7 +46,7 @@ public class HomePageController extends BaseController {
             Integer year = LocalDate.now().getYear();
             Integer month = LocalDate.now().getMonthValue();
 
-            User user = userService.getUser(userIdx);
+            Users user = userService.getUser(userIdx);
             CalendarSectionDto calendar = calendarService.getCalendar(userIdx,
                     new CalendarGetRequestDto(month, year));
 

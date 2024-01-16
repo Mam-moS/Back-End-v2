@@ -7,14 +7,12 @@ spring:
 
   jpa:
     database: mysql
-    #    database-platform: org.hibernate.dialect.MySQL8InnoDBDialect
+#    database-platform: org.hibernate.dialect.MySQL8InnoDBDialect
     properties:
       hibernate:
         format_sql: true
         show-sql: true
-        #        ddl-auto: update
-        hbm2ddl:
-          auto: update
+        ddl-auto: update
 
 cloud:
   aws:

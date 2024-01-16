@@ -5,7 +5,7 @@ import com.mmos.mmos.config.exception.DuplicateRequestException;
 import com.mmos.mmos.config.exception.EmptyEntityException;
 import com.mmos.mmos.src.domain.dto.request.SignUpRequestDto;
 import com.mmos.mmos.src.domain.entity.Major;
-import com.mmos.mmos.src.domain.entity.User;
+import com.mmos.mmos.src.domain.entity.Users;
 import com.mmos.mmos.src.repository.FriendRepository;
 import com.mmos.mmos.src.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,17 +23,17 @@ public class UserService {
     private final MajorService majorService;
     private final FriendRepository friendRepository;
 
-    public User findUserByIdx(Long userIdx) throws BaseException {
+    public Users findUserByIdx(Long userIdx) throws BaseException {
         return userRepository.findById(userIdx)
                 .orElseThrow(() -> new EmptyEntityException(EMPTY_USER));
     }
 
-    public User findUserById(String id) throws BaseException {
+    public Users findUserById(String id) throws BaseException {
         return userRepository.findUserByUserId(id)
                 .orElseThrow(() -> new EmptyEntityException(EMPTY_USER));
     }
 
-    public User findUserByIdAndPwd(Long idx, String pwd) throws BaseException {
+    public Users findUserByIdAndPwd(Long idx, String pwd) throws BaseException {
         return userRepository.findUserByUserIndexAndUserPassword(idx, pwd)
                 .orElseThrow(() -> new EmptyEntityException(EMPTY_USER));
     }
@@ -43,7 +43,7 @@ public class UserService {
     }
 
     @Transactional
-    public User getUser(Long userIdx) throws BaseException {
+    public Users getUser(Long userIdx) throws BaseException {
         try {
             return findUserByIdx(userIdx);
         } catch (EmptyEntityException e) {
@@ -54,7 +54,7 @@ public class UserService {
     }
 
     @Transactional
-    public User saveUser(SignUpRequestDto requestDto) throws BaseException {
+    public Users saveUser(SignUpRequestDto requestDto) throws BaseException {
         try {
             if(userRepository.findUserByUserEmail(requestDto.getEmail()).isPresent() ||
                     userRepository.findUserByUserId(requestDto.getId()).isPresent())
@@ -63,7 +63,7 @@ public class UserService {
             Major major = majorService.getMajor(requestDto.getMajorIdx());
             requestDto.encryptPwd(encrypt(requestDto.getPwd()));
 
-            User user = new User(requestDto, major);
+            Users user = new Users(requestDto, major);
             major.addUser(user);
 
             return userRepository.save(user);
@@ -76,7 +76,7 @@ public class UserService {
     }
 
     @Transactional
-    public void updateId(User user, String id) throws BaseException {
+    public void updateId(Users user, String id) throws BaseException {
         try {
             user.updateId(id);
         } catch (Exception e) {
@@ -85,7 +85,7 @@ public class UserService {
     }
 
     @Transactional
-    public void updateName(User user, String name) throws BaseException {
+    public void updateName(Users user, String name) throws BaseException {
         try {
             user.updateName(name);
         } catch (Exception e) {
@@ -94,7 +94,7 @@ public class UserService {
     }
 
     @Transactional
-    public void updatePwd(User user, String pwd) throws BaseException {
+    public void updatePwd(Users user, String pwd) throws BaseException {
         try {
             user.updatePwd(pwd);
         } catch (Exception e) {
@@ -103,7 +103,7 @@ public class UserService {
     }
 
     @Transactional
-    public void updateIsVisible(User user) throws BaseException {
+    public void updateIsVisible(Users user) throws BaseException {
         try {
             user.updateIsPlannerVisible(!user.getIsPlannerVisible());
         } catch (Exception e) {
@@ -112,7 +112,7 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteUser(User user) throws BaseException {
+    public void deleteUser(Users user) throws BaseException {
         try {
             userRepository.delete(user);
         } catch (Exception e) {

@@ -3,7 +3,7 @@ package com.mmos.mmos.src.service;
 import com.mmos.mmos.config.exception.BaseException;
 import com.mmos.mmos.config.exception.EmptyEntityException;
 import com.mmos.mmos.src.domain.entity.Badge;
-import com.mmos.mmos.src.domain.entity.User;
+import com.mmos.mmos.src.domain.entity.Users;
 import com.mmos.mmos.src.repository.BadgeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

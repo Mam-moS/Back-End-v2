@@ -31,7 +31,7 @@ public class SocialPageController extends BaseController {
     private final CalendarService calendarService;
 
     @GetMapping("")
-    public ResponseEntity<ResponseApiMessage> getPage(@AuthenticationPrincipal User tokenUser) {
+    public ResponseEntity<ResponseApiMessage> getPage(@AuthenticationPrincipal Users tokenUser) {
         try {
             Long userIdx = tokenUser.getUserIndex();
             // 기본 쿼리
@@ -40,7 +40,7 @@ public class SocialPageController extends BaseController {
 
             // 로직
             List<Friend> friends = friendService.getFriends(userIdx, 1);
-            List<User> top3 = friendService.getTop3Friends(userIdx, 1);
+            List<Users> top3 = friendService.getTop3Friends(userIdx, 1);
             Integer receivedFriendRequestsNum = friendService.getFriends(userIdx, 3).size();
 
             return sendResponseHttpByJson(SUCCESS, "소셜 페이지 로드 성공", new SocialPageResponseDto(friends, top3, receivedFriendRequestsNum));
@@ -51,7 +51,7 @@ public class SocialPageController extends BaseController {
 
     // 친구 요청 보내기
     @PostMapping("/request/{friendId}")
-    public ResponseEntity<ResponseApiMessage> sendFriendRequest(@AuthenticationPrincipal User tokenUser, @PathVariable String friendId) {
+    public ResponseEntity<ResponseApiMessage> sendFriendRequest(@AuthenticationPrincipal Users tokenUser, @PathVariable String friendId) {
         try {
             Friend request = friendService.sendFriendRequest(tokenUser.getUserIndex(), friendId);
 
@@ -63,7 +63,7 @@ public class SocialPageController extends BaseController {
 
     // 친구 요청 수락
     @PatchMapping("/request/{friendIdx}")
-    public ResponseEntity<ResponseApiMessage> acceptFriendRequest(@AuthenticationPrincipal User tokenUser, @PathVariable Long friendIdx) {
+    public ResponseEntity<ResponseApiMessage> acceptFriendRequest(@AuthenticationPrincipal Users tokenUser, @PathVariable Long friendIdx) {
         try {
             Friend response = friendService.acceptFriendRequest(tokenUser.getUserIndex(), friendIdx);
             List<Friend> myFriends = response.getUser().getUserFriends();
@@ -77,7 +77,7 @@ public class SocialPageController extends BaseController {
 
     // 친구 요청 거부/취소/친구 삭제
     @DeleteMapping("/request/{friendIdx}")
-    public ResponseEntity<ResponseApiMessage> deleteFriend(@AuthenticationPrincipal User tokenUser, @PathVariable Long friendIdx) {
+    public ResponseEntity<ResponseApiMessage> deleteFriend(@AuthenticationPrincipal Users tokenUser, @PathVariable Long friendIdx) {
         try {
             Integer friendStatus = friendService.deleteFriendRequest(tokenUser.getUserIndex(), friendIdx);
             List<Friend> myFriends = friendService.getFriends(tokenUser.getUserIndex(), friendStatus);
@@ -90,7 +90,7 @@ public class SocialPageController extends BaseController {
 
     // 받은 친구 요청 목록
     @GetMapping("/receive")
-    public ResponseEntity<ResponseApiMessage> getReceivedFriendRequests(@AuthenticationPrincipal User tokenUser) {
+    public ResponseEntity<ResponseApiMessage> getReceivedFriendRequests(@AuthenticationPrincipal Users tokenUser) {
         try {
             List<Friend> requestList = friendService.getFriends(tokenUser.getUserIndex(), 3);
 
@@ -102,7 +102,7 @@ public class SocialPageController extends BaseController {
 
     // 보낸 친구 요청 목록
     @GetMapping("/send")
-    public ResponseEntity<ResponseApiMessage> getSentFriendRequests(@AuthenticationPrincipal User tokenUser) {
+    public ResponseEntity<ResponseApiMessage> getSentFriendRequests(@AuthenticationPrincipal Users tokenUser) {
         try {
             List<Friend> requestList = friendService.getFriends(tokenUser.getUserIndex(), 2);
 
@@ -114,7 +114,7 @@ public class SocialPageController extends BaseController {
 
     // 친구 상단 고정
     @PatchMapping("/fix/{friendIdx}")
-    public ResponseEntity<ResponseApiMessage> updateIsFixed(@AuthenticationPrincipal User tokenUser, @PathVariable Long friendIdx) {
+    public ResponseEntity<ResponseApiMessage> updateIsFixed(@AuthenticationPrincipal Users tokenUser, @PathVariable Long friendIdx) {
         try {
             friendService.updateIsFixed(tokenUser.getUserIndex(), friendIdx);
             List<Friend> myFriends = friendService.getFriends(tokenUser.getUserIndex(), 1);
@@ -128,9 +128,9 @@ public class SocialPageController extends BaseController {
 
     // 친구 플래너 확인
     @GetMapping("/friendInfo/{friendUserIdx}")
-    public ResponseEntity<ResponseApiMessage> getFriendPlanner(@AuthenticationPrincipal User tokenUser, @PathVariable Long friendUserIdx) {
+    public ResponseEntity<ResponseApiMessage> getFriendPlanner(@AuthenticationPrincipal Users tokenUser, @PathVariable Long friendUserIdx) {
         try {
-            User friend = userService.getUser(friendUserIdx);
+            Users friend = userService.getUser(friendUserIdx);
             if (!friend.getIsPlannerVisible())
                 throw new NotAuthorizedAccessException(FORBIDDEN_PLANNER);
             if (!tokenUser.getUserIndex().equals(friendUserIdx)) {

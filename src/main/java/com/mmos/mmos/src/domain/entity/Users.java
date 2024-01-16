@@ -20,7 +20,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @DynamicInsert
-public class User implements UserDetails {
+public class Users implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -105,7 +105,7 @@ public class User implements UserDetails {
     @JoinColumn(name = "majorIndex")
     private Major major;
 
-    public User(SignUpRequestDto responseDto, Major major) {
+    public Users(SignUpRequestDto responseDto, Major major) {
         this.userId = responseDto.getId();
         this.userPassword = responseDto.getPwd();
         this.userName = responseDto.getName();

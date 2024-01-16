@@ -9,7 +9,7 @@ import com.mmos.mmos.src.domain.dto.request.SignUpRequestDto;
 import com.mmos.mmos.src.domain.entity.College;
 import com.mmos.mmos.src.domain.entity.Major;
 import com.mmos.mmos.src.domain.entity.University;
-import com.mmos.mmos.src.domain.entity.User;
+import com.mmos.mmos.src.domain.entity.Users;
 import com.mmos.mmos.src.service.*;
 import com.univcert.api.UnivCert;
 import lombok.RequiredArgsConstructor;
@@ -89,7 +89,7 @@ public class SignUpPageController extends BaseController {
             if(!requestDto.getIsCertified())
                 throw new BusinessLogicException(BUSINESS_LOGIC_ERROR);
 
-            User user = userService.saveUser(requestDto);
+            Users user = userService.saveUser(requestDto);
             userBadgeService.saveUserBadge(user.getUserIndex());
             calendarService.saveCalendar(LocalDate.now().getYear(), LocalDate.now().getMonthValue(), user.getUserIndex());
             friendService.friendWithMe(user.getUserIndex());

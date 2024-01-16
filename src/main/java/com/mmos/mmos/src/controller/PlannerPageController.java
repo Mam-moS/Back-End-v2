@@ -11,7 +11,7 @@ import com.mmos.mmos.src.domain.dto.response.planner.PlannerSectionDto;
 import com.mmos.mmos.src.domain.entity.Plan;
 import com.mmos.mmos.src.domain.entity.Planner;
 import com.mmos.mmos.src.domain.entity.Project;
-import com.mmos.mmos.src.domain.entity.User;
+import com.mmos.mmos.src.domain.entity.Users;
 import com.mmos.mmos.src.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -36,7 +36,7 @@ public class PlannerPageController extends BaseController {
     private final PlanService planService;
 
     @GetMapping("/{date}")
-    public ResponseEntity<ResponseApiMessage> getPage(@AuthenticationPrincipal User tokenUser, @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+    public ResponseEntity<ResponseApiMessage> getPage(@AuthenticationPrincipal Users tokenUser, @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         try {
             // 객체 가져오기
             CalendarSectionDto calendar =
@@ -54,7 +54,7 @@ public class PlannerPageController extends BaseController {
     }
 
     @PostMapping("plans")
-    public ResponseEntity<ResponseApiMessage> savePlan(@AuthenticationPrincipal User tokenUser, @RequestBody PlanSaveRequestDto requestDto) {
+    public ResponseEntity<ResponseApiMessage> savePlan(@AuthenticationPrincipal Users tokenUser, @RequestBody PlanSaveRequestDto requestDto) {
         try {
             // Validation: input
             if(requestDto.getPlanName() == null)
@@ -129,7 +129,7 @@ public class PlannerPageController extends BaseController {
 
     // 프로젝트 생성
     @PostMapping("/projects")
-    public ResponseEntity<ResponseApiMessage> saveProject(@AuthenticationPrincipal User tokenUser, @RequestBody ProjectSaveRequestDto requestDto) {
+    public ResponseEntity<ResponseApiMessage> saveProject(@AuthenticationPrincipal Users tokenUser, @RequestBody ProjectSaveRequestDto requestDto) {
         try {
             // Validation: input
             if(requestDto.getName() == null)
@@ -145,7 +145,7 @@ public class PlannerPageController extends BaseController {
                 throw new BusinessLogicException(BUSINESS_LOGIC_ERROR);
 
             // Business Logic
-            User user = userService.getUser(tokenUser.getUserIndex());
+            Users user = userService.getUser(tokenUser.getUserIndex());
 
             return sendResponseHttpByJson(SUCCESS, "프로젝트 생성 성공", projectService.saveProject(requestDto, user, false, null));
         } catch (BaseException e) {

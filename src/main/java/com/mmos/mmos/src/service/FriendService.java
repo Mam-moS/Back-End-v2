@@ -5,7 +5,7 @@ import com.mmos.mmos.config.exception.BusinessLogicException;
 import com.mmos.mmos.config.exception.DuplicateRequestException;
 import com.mmos.mmos.config.exception.EmptyEntityException;
 import com.mmos.mmos.src.domain.entity.Friend;
-import com.mmos.mmos.src.domain.entity.User;
+import com.mmos.mmos.src.domain.entity.Users;
 import com.mmos.mmos.src.repository.FriendRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ public class FriendService {
                 .orElseThrow(() -> new EmptyEntityException(EMPTY_USER));
     }
 
-    public Friend findFriendByUserAndFriend(User user, User friend) throws BaseException {
+    public Friend findFriendByUserAndFriend(Users user, Users friend) throws BaseException {
         return friendRepository.findFriendByUserAndFriend(user, friend)
                 .orElseThrow(() -> new EmptyEntityException(EMPTY_FRIEND));
     }
@@ -42,7 +42,7 @@ public class FriendService {
     @Transactional
     public void friendWithMe(Long userIdx) throws BaseException {
         try {
-            User user = userService.getUser(userIdx);
+            Users user = userService.getUser(userIdx);
             if(user.getUserFriends().isEmpty())
                 friendRepository.save(new Friend(1, user, user));
 
@@ -86,10 +86,10 @@ public class FriendService {
     }
 
     @Transactional
-    public List<User> getTop3Friends(Long userIdx, int friendStatus) throws BaseException {
+    public List<Users> getTop3Friends(Long userIdx, int friendStatus) throws BaseException {
         try {
             List<Friend> myFriends = findFriendsByUserIndexAndFriendStatus(userIdx, friendStatus);
-            List<User> top3 = new ArrayList<>();
+            List<Users> top3 = new ArrayList<>();
 
             if(!myFriends.isEmpty()) {
                 myFriends.sort(new FriendStudyTimeComparator());
@@ -112,8 +112,8 @@ public class FriendService {
     @Transactional
     public Friend sendFriendRequest(Long userIdx, String friendId) throws BaseException {
         try {
-            User user = userService.getUser(userIdx);
-            User friend = userService.findUserById(friendId);
+            Users user = userService.getUser(userIdx);
+            Users friend = userService.findUserById(friendId);
 
             if(user.equals(friend))
                 throw new BusinessLogicException(BUSINESS_LOGIC_ERROR);
@@ -206,7 +206,7 @@ public class FriendService {
     }
 
     @Transactional
-    public void deleteFriends(User user) throws BaseException {
+    public void deleteFriends(Users user) throws BaseException {
         try {
             List<Friend> friends = friendRepository.findFriendsByFriend(user);
             friendRepository.deleteAll(friends);

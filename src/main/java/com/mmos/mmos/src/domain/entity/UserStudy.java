@@ -5,17 +5,15 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.DynamicInsert;
 
 @Entity
 @Getter
 @NoArgsConstructor
-@DynamicInsert
 public class UserStudy {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userstudyIndex;
+    private Long userStudyIndex;
 
     /*
         1: 운영진
@@ -24,12 +22,12 @@ public class UserStudy {
         4: 참가 요청한 유저 (user -send-> study)
      */
     @Column
-    private Integer userstudyMemberStatus;
+    private Integer userStudyMemberStatus;
 
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "userIndex")
-    private User user;
+    private Users user;
 
     @JsonBackReference
     @ManyToOne
@@ -37,12 +35,12 @@ public class UserStudy {
     private Study study;
 
     public void updateMemberStatus(Integer memberStatus){
-        this.userstudyMemberStatus = memberStatus;
+        this.userStudyMemberStatus = memberStatus;
     }
 
     @Builder
-    public UserStudy(Integer memberStatus, User user, Study study) {
-        this.userstudyMemberStatus = memberStatus;
+    public UserStudy(Integer memberStatus, Users user, Study study) {
+        this.userStudyMemberStatus = memberStatus;
         this.user = user;
         this.study = study;
     }

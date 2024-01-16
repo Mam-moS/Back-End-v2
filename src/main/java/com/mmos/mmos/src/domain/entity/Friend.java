@@ -29,15 +29,15 @@ public class Friend {
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "userIndex")
-    private User user;
+    private Users user;
 
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "friendUserIndex")
-    private User friend;
+    private Users friend;
 
 
-    public Friend(Integer friendStatus, User send, User receive) {
+    public Friend(Integer friendStatus, Users send, Users receive) {
         this.friendStatus = friendStatus;
         this.user = send;
         this.friend = receive;

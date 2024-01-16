@@ -5,7 +5,7 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.mmos.mmos.config.exception.BaseException;
-import com.mmos.mmos.src.domain.entity.File;
+import com.mmos.mmos.src.domain.entity.Files;
 import com.mmos.mmos.src.domain.entity.Post;
 import com.mmos.mmos.src.repository.FileRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,14 +32,14 @@ public class FileService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public File findById(Long fileIndex) throws BaseException {
+    public Files findById(Long fileIndex) throws BaseException {
         return fileRepository.findById(fileIndex)
                 .orElseThrow(() -> new BaseException(EMPTY_FILE));
 
     }
 
     @Transactional
-    public File uploadFile(MultipartFile multipartFile, Post post) throws BaseException {
+    public Files uploadFile(MultipartFile multipartFile, Post post) throws BaseException {
         try {
             System.out.println(multipartFile);
             System.out.println(post);
@@ -61,7 +61,7 @@ public class FileService {
             }
 
             String storeFileUrl = amazonS3Client.getUrl(bucket, key).toString();
-            File uploadFile = new File(storeFileUrl, post);
+            Files uploadFile = new Files(storeFileUrl, post);
 
             return fileRepository.save(uploadFile);
         } catch (Exception e) {

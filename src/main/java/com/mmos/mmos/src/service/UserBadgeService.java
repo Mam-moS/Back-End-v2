@@ -4,7 +4,7 @@ import com.mmos.mmos.config.exception.BaseException;
 import com.mmos.mmos.config.exception.EmptyEntityException;
 import com.mmos.mmos.src.domain.dto.request.BadgeUpdateRequestDto;
 import com.mmos.mmos.src.domain.entity.Badge;
-import com.mmos.mmos.src.domain.entity.User;
+import com.mmos.mmos.src.domain.entity.Users;
 import com.mmos.mmos.src.domain.entity.UserBadge;
 import com.mmos.mmos.src.repository.UserBadgeRepository;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +42,7 @@ public class UserBadgeService {
     @Transactional
     public void saveUserBadge(Long userIdx) throws BaseException {
         try {
-            User user = userService.getUser(userIdx);
+            Users user = userService.getUser(userIdx);
             List<Badge> badges = badgeService.findAllBadges();
 
             List<Badge> newBadges = new ArrayList<>();

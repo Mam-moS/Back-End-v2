@@ -5,7 +5,7 @@ import com.mmos.mmos.config.exception.BaseException;
 import com.mmos.mmos.src.domain.dto.request.BadgeUpdateRequestDto;
 import com.mmos.mmos.src.domain.dto.response.challenge.ChallengePageResponseDto;
 import com.mmos.mmos.src.domain.entity.Badge;
-import com.mmos.mmos.src.domain.entity.User;
+import com.mmos.mmos.src.domain.entity.Users;
 import com.mmos.mmos.src.domain.entity.UserBadge;
 import com.mmos.mmos.src.service.BadgeService;
 import com.mmos.mmos.src.service.UserBadgeService;
@@ -27,7 +27,7 @@ public class ChallengePageController extends BaseController {
     private final BadgeService badgeService;
 
     @GetMapping("")
-    public ResponseEntity<ResponseApiMessage> getPage(@AuthenticationPrincipal User tokenUser) {
+    public ResponseEntity<ResponseApiMessage> getPage(@AuthenticationPrincipal Users tokenUser) {
         try {
             Long userIdx = tokenUser.getUserIndex();
             // 기본 쿼리
@@ -51,7 +51,7 @@ public class ChallengePageController extends BaseController {
 
     // 대표 뱃지 설정
     @PatchMapping("")
-    public ResponseEntity<ResponseApiMessage> setRepresentBadges(@AuthenticationPrincipal User tokenUser, @RequestBody BadgeUpdateRequestDto requestDto) {
+    public ResponseEntity<ResponseApiMessage> setRepresentBadges(@AuthenticationPrincipal Users tokenUser, @RequestBody BadgeUpdateRequestDto requestDto) {
         try {
             return sendResponseHttpByJson(SUCCESS, "대표 뱃지 설정 성공", userBadgeService.setRepresentBadges(tokenUser.getUserIndex(), requestDto));
         } catch (BaseException e) {

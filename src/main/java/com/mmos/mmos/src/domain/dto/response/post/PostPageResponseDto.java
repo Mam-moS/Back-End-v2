@@ -1,6 +1,6 @@
 package com.mmos.mmos.src.domain.dto.response.post;
 
-import com.mmos.mmos.src.domain.entity.File;
+import com.mmos.mmos.src.domain.entity.Files;
 import com.mmos.mmos.src.domain.entity.Post;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +19,7 @@ public class PostPageResponseDto {
     private Timestamp updateAt;
     private String contents;
     private String writerName;
-    private List<File> files;
+    private List<Files> files;
 
     public PostPageResponseDto(Post post) {
         this.title = post.getPostTitle();

@@ -2,7 +2,6 @@ package com.mmos.mmos.src.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,7 +11,7 @@ import static lombok.AccessLevel.*;
 @NoArgsConstructor(access = PROTECTED)
 @Getter
 @Entity
-public class File {
+public class Files {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -26,7 +25,7 @@ public class File {
     @JoinColumn(name = "postIndex")
     private Post post;
 
-    public File(String storeFileUrl, Post post) {
+    public Files(String storeFileUrl, Post post) {
         this.storeFileUrl = storeFileUrl;
         this.post = post;
     }

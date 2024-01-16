@@ -17,7 +17,7 @@ public class UserBadge {
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "userIndex")
-    private User user;
+    private Users user;
 
     @JsonBackReference
     @ManyToOne
@@ -27,7 +27,7 @@ public class UserBadge {
     @Column
     private Boolean userbadgeIsVisible = false;
 
-    public UserBadge(User user, Badge badge) {
+    public UserBadge(Users user, Badge badge) {
         this.user = user;
         this.badge = badge;
     }

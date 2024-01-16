@@ -5,7 +5,7 @@ import com.mmos.mmos.security.JwtService;
 import com.mmos.mmos.src.domain.dto.request.LoginRequestDto;
 import com.mmos.mmos.src.domain.entity.TokenType;
 import com.mmos.mmos.src.domain.entity.Tokens;
-import com.mmos.mmos.src.domain.entity.User;
+import com.mmos.mmos.src.domain.entity.Users;
 import com.mmos.mmos.src.repository.TokenRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -30,7 +30,7 @@ public class AuthService implements LogoutHandler {
 
     public String authenticate(LoginRequestDto requestDto) throws BaseException {
         try {
-            User user = userService.findUserById(requestDto.getId());
+            Users user = userService.findUserById(requestDto.getId());
 
             // 암호화 된 비밀번호와 이미 암호화된 비밀번호를 비교
             if(!user.getUserPassword().equals(encrypt(requestDto.getPwd())))
@@ -48,7 +48,7 @@ public class AuthService implements LogoutHandler {
         }
     }
 
-    private void revokeAllUserTokens(User user) {
+    private void revokeAllUserTokens(Users user) {
         List<Tokens> validTokens = tokenRepository.findAllByUserNameAndExpiredIsFalseAndRevokedIsFalse(user.getUserId());
         System.out.println("validTokens = " + validTokens);
         if (!validTokens.isEmpty()) {
@@ -60,7 +60,7 @@ public class AuthService implements LogoutHandler {
         }
     }
 
-    private void saveToken (User user, String jwtToken) {
+    private void saveToken (Users user, String jwtToken) {
         Tokens token = Tokens.builder()
                 .token(jwtToken)
                 .tokenType(TokenType.BEARER)

@@ -27,14 +27,14 @@ public class Major {
 
     @JsonManagedReference
     @OneToMany(mappedBy = "major", cascade = CascadeType.REMOVE,orphanRemoval = true)
-    private List<User> majorUsers;
+    private List<Users> majorUsers;
 
     public Major(String name, College college) {
         this.majorName = name;
         this.college = college;
     }
 
-    public void addUser(User user){
+    public void addUser(Users user){
         this.majorUsers.add(user);
     }
 }

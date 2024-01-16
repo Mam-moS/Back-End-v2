@@ -5,7 +5,7 @@ import com.mmos.mmos.config.exception.EmptyEntityException;
 import com.mmos.mmos.src.domain.dto.request.StudySaveRequestDto;
 import com.mmos.mmos.src.domain.dto.request.StudyUpdateRequestDto;
 import com.mmos.mmos.src.domain.entity.Study;
-import com.mmos.mmos.src.domain.entity.User;
+import com.mmos.mmos.src.domain.entity.Users;
 import com.mmos.mmos.src.domain.entity.UserStudy;
 import com.mmos.mmos.src.repository.PostRepository;
 import com.mmos.mmos.src.repository.StudyRepository;
@@ -55,14 +55,14 @@ public class StudyService {
     }
 
     @Transactional
-    public List<User> getStudyAppliersOrInvitee(Long studyIdx, Integer status) throws BaseException {
+    public List<Users> getStudyAppliersOrInvitee(Long studyIdx, Integer status) throws BaseException {
         try {
             Study study = findStudyByIdx(studyIdx);
 
             // UserStudy list에서 지원자 선별
-            List<User> appliersDto = new ArrayList<>();
+            List<Users> appliersDto = new ArrayList<>();
             for (UserStudy userStudy : study.getStudyUserstudies()){
-                if(userStudy.getUserstudyMemberStatus().equals(status)) {
+                if(userStudy.getUserStudyMemberStatus().equals(status)) {
                     appliersDto.add(userStudy.getUser());
                 }
             }
@@ -78,6 +78,7 @@ public class StudyService {
     @Transactional
     public Study getStudy(Long studyIdx) throws BaseException {
         try {
+            System.out.println(studyIdx);
             return findStudyByIdx(studyIdx);
         } catch (EmptyEntityException e) {
             throw e;
