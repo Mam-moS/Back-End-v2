@@ -17,11 +17,14 @@ public class NoticeSectionDto {
     private String writer;
     // 작성 시간
     private Timestamp createdAt;
+    // 수정 시간
+    private Timestamp updatedAt;
 
     public NoticeSectionDto(Post post) {
         this.idx = post.getPostIndex();
         this.title = post.getPostTitle();
         this.writer = post.getPostWriterName();
         this.createdAt = post.getPostCreatedAt();
+        this.updatedAt = post.getPostUpdatedAt();
     }
 }

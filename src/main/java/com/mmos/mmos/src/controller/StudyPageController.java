@@ -5,6 +5,7 @@ import com.mmos.mmos.config.exception.*;
 import com.mmos.mmos.src.domain.dto.request.*;
 import com.mmos.mmos.src.domain.dto.response.study.*;
 import com.mmos.mmos.src.domain.entity.*;
+import com.mmos.mmos.src.domain.entity.Post;
 import com.mmos.mmos.src.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageImpl;
@@ -35,53 +36,50 @@ public class StudyPageController extends BaseController {
 
     // 현재 스터디 기준 가져오기 (전체 정보가 아님) -> 스터디도 페이지로 가져오나? -> 일단 페이지로 가져오자
     @GetMapping("")
-    public ResponseEntity<ResponseApiMessage> getPage(@AuthenticationPrincipal User tokenUser,
-                                                      @PageableDefault(size = 1, sort = "studyIdx") Pageable studyPage,
-                                                      @PageableDefault(size = 1, sort = "projectNumber", direction = Sort.Direction.ASC) Pageable projectPage,
-                                                      @PageableDefault(size = 3, sort = "postIndex", direction = Sort.Direction.DESC) Pageable noticePage,
-                                                      @PageableDefault(size = 5, sort = "postIndex", direction = Sort.Direction.DESC) Pageable promotionPage) {
+    public ResponseEntity<ResponseApiMessage> getPage(@AuthenticationPrincipal Users tokenUser,
+                                                      @PageableDefault(size = 1, sort = "studyIdx") Pageable studyPage) {
         try {
             // 나
-            User user = userService.getUser(tokenUser.getUserIndex());
-            // 내 스터디들
-            List<MyStudySectionDto> myStudySectionDto = new ArrayList<>();
-            List<UserStudy> userStudies = user.getUserUserstudies();
-            List<ProjectSectionDto> projectSectionDto = new ArrayList<>();
-            List<MemberSectionInProjectDto> memberSectionInProjectDto = new ArrayList<>(); // 내꺼 포함 다른 멤버들의 프로젝트
-            List<MemberSectionInMemberDto> memberSectionInMemberDto = new ArrayList<>();
-            List<NoticeSectionDto> noticeSectionDto = new ArrayList<>();
+            Users user = userService.getUser(tokenUser.getUserIndex());
+            List<StudyPageResponseDto> result = new ArrayList<>();
 
-            for (UserStudy userStudy : userStudies) {   // 내 스터디들 iter
-                // Page<ProjectSectionDto> projectSection
-                for (Project userProject : user.getUserProjects()) {    // 내 프로젝트 iter
-                    if (userProject.getStudy().equals(userStudy.getStudy())) {   // 현재 스터디와 일치하면
-                        for (Project studyProject : userStudy.getStudy().getStudyProjects()) {  // 다른 인원들의 프로젝트들도 추가
-                            if (studyProject.getProjectNumber().equals(userProject.getProjectNumber()))
-                                memberSectionInProjectDto.add(new MemberSectionInProjectDto(studyProject.getUser(), studyProject));
+            for (UserStudy userStudy : user.getUserUserstudies()) {
+                Study study = userStudy.getStudy();
+                // 가장 최근 스터디 ? => 인덱스가 큰 스터디
+
+                // 내가 참석했던 스터디 프로젝트들
+                List<Project> myStudyProjects = projectService.getMyStudyAttendProjects(userStudy);
+
+                // 가장 최근에 내가 참여한 프로젝트 가져오기
+                Project recentProject = new Project();
+                if (!myStudyProjects.isEmpty()) {
+                    recentProject = myStudyProjects.get(0);
+                    for (int i = 1; i < myStudyProjects.size(); i++) {
+                        Project project = myStudyProjects.get(i);
+
+                        if (project.getProjectIsComplete()) {
+                            if (recentProject.getProjectEndTime().isBefore(project.getProjectEndTime())) {
+                                recentProject = project;
+                            }
                         }
-                        projectSectionDto.add(new ProjectSectionDto(userProject, userStudy.getStudy(), memberSectionInProjectDto));
                     }
                 }
 
-                // StudyMemberSectionDto memberSection
-                for (UserStudy studyUserstudy : userStudy.getStudy().getStudyUserstudies()) {
-                    memberSectionInMemberDto.add(new MemberSectionInMemberDto(studyUserstudy));
+                List<Member> members = new ArrayList<>();
+                for (UserStudy memberUserStudy : study.getStudyUserstudies()) {
+                    members.add(new Member(memberUserStudy));
                 }
 
-                for (Post studyPost : userStudy.getStudy().getStudyPosts()) {
-                    if (studyPost.getPostIsNotice())
-                        noticeSectionDto.add(new NoticeSectionDto(studyPost));
-                }
+                HomeTabResponseDto home = new HomeTabResponseDto(study, new ProjectTabResponseDto(recentProject), members);
+                List<ProjectTabResponseDto> project = projectService.getMyStudyProjects(study);
 
-                myStudySectionDto.add(new MyStudySectionDto(userStudy.getStudy(),
-                        new PageImpl<>(projectSectionDto, projectPage, projectSectionDto.size()),
-                        new StudyMemberSectionDto(userStudy.getStudy(), memberSectionInMemberDto),
-                        postService.getNotices(userStudy, noticePage)));
+                SocialTabResponseDto social = new SocialTabResponseDto(members, study.getStudyMemberNum());
+                PostTabResponseDto post = postService.getStudyPosts(userStudy);
+
+                result.add(new StudyPageResponseDto(home, project, social, post));
             }
 
-            return sendResponseHttpByJson(SUCCESS, "스터디 페이지 로드 성공",
-                    new StudyPageResponseDto(new PageImpl<>(myStudySectionDto, studyPage, myStudySectionDto.size()),
-                            postService.getPromotions(promotionPage)));
+            return sendResponseHttpByJson(SUCCESS, "스터디 페이지 로드 성공", new PageImpl<>(result, studyPage, result.size()));
         } catch (BaseException e) {
             return sendResponseHttpByJson(e.getStatus(), e.getStatus().getMessage(), null);
         }
@@ -89,7 +87,7 @@ public class StudyPageController extends BaseController {
 
     // 스터디 생성
     @PostMapping("")
-    public ResponseEntity<ResponseApiMessage> saveStudy(@AuthenticationPrincipal User tokenUser, @RequestBody StudySaveRequestDto requestDto) {
+    public ResponseEntity<ResponseApiMessage> saveStudy(@AuthenticationPrincipal Users tokenUser, @RequestBody StudySaveRequestDto requestDto) {
         try {
             if (requestDto.getName().isEmpty())
                 throw new EmptyInputException(EMPTY_STUDY_NAME);
@@ -135,7 +133,7 @@ public class StudyPageController extends BaseController {
             Post post = postService.savePost(userStudyIdx, requestDto);
             // 파일 저장
             for (MultipartFile multipartFile : multipartFiles) {
-                File file = fileService.uploadFile(multipartFile, post);
+                Files file = fileService.uploadFile(multipartFile, post);
                 post.addFile(file);
             }
 
@@ -163,7 +161,7 @@ public class StudyPageController extends BaseController {
             Post post = postService.savePost(userStudyIdx, requestDto);
             // 파일 저장
             for (MultipartFile multipartFile : multipartFiles) {
-                File file = fileService.uploadFile(multipartFile, post);
+                Files file = fileService.uploadFile(multipartFile, post);
                 post.addFile(file);
             }
 
@@ -251,7 +249,7 @@ public class StudyPageController extends BaseController {
 
     // 참가 요청 보내기 - 유저
     @PostMapping("/members/enroll/{studyIdx}")
-    public ResponseEntity<ResponseApiMessage> joinRequestStudy(@AuthenticationPrincipal User tokenUser, @PathVariable Long studyIdx) {
+    public ResponseEntity<ResponseApiMessage> joinRequestStudy(@AuthenticationPrincipal Users tokenUser, @PathVariable Long studyIdx) {
         try {
             return sendResponseHttpByJson(SUCCESS, "스터디 참가 요청 성공.",
                     userStudyService.saveUserStudy(4, tokenUser.getUserIndex(), studyIdx));
@@ -317,7 +315,7 @@ public class StudyPageController extends BaseController {
             userStudyService.updateStudyNum(userStudy, false);
 
             // 새 리더 위임
-            if (userStudy.getUserstudyMemberStatus() == 1) {
+            if (userStudy.getUserStudyMemberStatus() == 1) {
                 UserStudy newLeader = userStudyService.getUserStudy(newLeaderUserStudyIdx);
                 userStudyService.updateStudyMemberStatus(newLeader, 1);
             }
@@ -336,7 +334,7 @@ public class StudyPageController extends BaseController {
     public ResponseEntity<ResponseApiMessage> updateNewLeader(@PathVariable Long myUserStudyIdx, @PathVariable Long newLeaderUserStudyIdx) {
         try {
             UserStudy myUserStudy = userStudyService.getUserStudy(myUserStudyIdx);
-            if (myUserStudy.getUserstudyMemberStatus() != 1)
+            if (myUserStudy.getUserStudyMemberStatus() != 1)
                 throw new BusinessLogicException(BUSINESS_LOGIC_ERROR);
 
             UserStudy newLeaderUserStudy = userStudyService.getUserStudy(newLeaderUserStudyIdx);
@@ -355,7 +353,7 @@ public class StudyPageController extends BaseController {
         try {
             UserStudy userStudy = userStudyService.getUserStudy(myUserStudyIdx);
 
-            if (!userStudy.getUserstudyMemberStatus().equals(1))
+            if (!userStudy.getUserStudyMemberStatus().equals(1))
                 throw new NotAuthorizedAccessException(NOT_AUTHORIZED);
 
             studyService.deleteStudy(userStudy.getStudy());
@@ -406,7 +404,7 @@ public class StudyPageController extends BaseController {
                 throw new BusinessLogicException(BUSINESS_LOGIC_ERROR);
 
             UserStudy userStudy = userStudyService.getUserStudy(userStudyIdx);
-            if (!userStudy.getUserstudyMemberStatus().equals(1))
+            if (!userStudy.getUserStudyMemberStatus().equals(1))
                 throw new NotAuthorizedAccessException(NOT_AUTHORIZED);
 
             // 팀원들 모두 가져와서 생성
@@ -420,10 +418,10 @@ public class StudyPageController extends BaseController {
 
             Project project = null;
             for (UserStudy studyUserstudy : userStudy.getStudy().getStudyUserstudies()) {
-                if (studyUserstudy.getUserstudyMemberStatus() >= 3)
+                if (studyUserstudy.getUserStudyMemberStatus() >= 3)
                     continue;
 
-                User user = studyUserstudy.getUser();
+                Users user = studyUserstudy.getUser();
 
                 project = projectService.saveProject(requestDto, user, true, biggestNum);
                 user.addProject(project);
@@ -448,7 +446,7 @@ public class StudyPageController extends BaseController {
             if (requestDto.getNewEndTime() == null)
                 throw new EmptyInputException(PROJECT_EMPTY_ENDTIME);
             UserStudy userStudy = userStudyService.getUserStudy(userStudyIdx);
-            if (!userStudy.getUserstudyMemberStatus().equals(1))
+            if (!userStudy.getUserStudyMemberStatus().equals(1))
                 throw new NotAuthorizedAccessException(NOT_AUTHORIZED);
 
             Study study = userStudy.getStudy();
@@ -469,7 +467,7 @@ public class StudyPageController extends BaseController {
     @DeleteMapping("/projects/{userStudyIdx}/{projectIdx}")
     public ResponseEntity<ResponseApiMessage> deleteStudyProject(@PathVariable Long userStudyIdx, @PathVariable Long projectIdx) {
         try {
-            if (!userStudyService.getUserStudy(userStudyIdx).getUserstudyMemberStatus().equals(1))
+            if (!userStudyService.getUserStudy(userStudyIdx).getUserStudyMemberStatus().equals(1))
                 throw new NotAuthorizedAccessException(NOT_AUTHORIZED);
             Project project = projectService.getProject(projectIdx);
             Study study = project.getStudy();
