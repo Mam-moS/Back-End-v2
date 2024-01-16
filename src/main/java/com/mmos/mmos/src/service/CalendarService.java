@@ -103,8 +103,6 @@ public class CalendarService {
                 LocalDate thisMonth = LocalDate.of(calendarGetRequestDto.getYear(), calendarGetRequestDto.getMonth(), 1);
 
                 for (Project project : userProjectList) {
-                    if(!project.getProjectIsVisible())
-                        continue;
                     startDate = project.getProjectStartTime();
                     endDate = project.getProjectEndTime();
 
