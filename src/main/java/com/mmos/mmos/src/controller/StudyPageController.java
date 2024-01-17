@@ -53,15 +53,21 @@ public class StudyPageController extends BaseController {
                 // 가장 최근에 내가 참여한 프로젝트 가져오기
                 Project recentProject = new Project();
                 if (!myStudyProjects.isEmpty()) {
-                    recentProject = myStudyProjects.get(0);
-                    for (int i = 1; i < myStudyProjects.size(); i++) {
-                        Project project = myStudyProjects.get(i);
+                    for(int i = 0; i < myStudyProjects.size(); i++) {
+                        if(myStudyProjects.get(i).getProjectIsComplete())
+                            recentProject = myStudyProjects.get(i);
+                    }
 
+                    for (int i = 0; i < myStudyProjects.size(); i++) {
+                        Project project = myStudyProjects.get(i);
+                        System.out.println("project.getProjectIndex() = " + project.getProjectIndex());
+                        System.out.println("recentProject.getProjectIndex() = " + recentProject.getProjectIndex());
                         if (project.getProjectIsComplete()) {
-                            if (recentProject.getProjectEndTime().isBefore(project.getProjectEndTime())) {
+                            if (recentProject.getProjectEndTime().isAfter(project.getProjectEndTime())) {
                                 recentProject = project;
                             }
                         }
+                        System.out.println("recentProject = " + recentProject.getProjectIndex());
                     }
                 }
 
@@ -70,7 +76,7 @@ public class StudyPageController extends BaseController {
                     members.add(new Member(memberUserStudy));
                 }
 
-                HomeTabResponseDto home = new HomeTabResponseDto(study, new ProjectTabResponseDto(recentProject), members);
+                HomeTabResponseDto home = new HomeTabResponseDto(study, projectService.getAttendProjectWithUsers(recentProject), members);
                 List<ProjectTabResponseDto> project = projectService.getMyStudyProjects(study);
 
                 SocialTabResponseDto social = new SocialTabResponseDto(members, study.getStudyMemberNum());
@@ -146,7 +152,7 @@ public class StudyPageController extends BaseController {
 
     // 스터디 공지 글쓰기
     @PostMapping("/notice/{userStudyIdx}")
-    public ResponseEntity<ResponseApiMessage> saveNotice(@RequestParam MultipartFile[] multipartFiles, @PathVariable Long userStudyIdx, @RequestBody PostSaveRequestDto requestDto) {
+    public ResponseEntity<ResponseApiMessage> saveNotice(@PathVariable Long userStudyIdx, @RequestPart PostSaveRequestDto requestDto, @RequestPart List<MultipartFile> multipartFiles) {
         try {
             if (requestDto.getPostTitle().isEmpty())
                 throw new EmptyInputException(POST_POST_EMPTY_TITLE);
@@ -154,7 +160,7 @@ public class StudyPageController extends BaseController {
                 throw new EmptyInputException(POST_POST_EMPTY_CONTENTS);
             if (!requestDto.getIsNotice())
                 throw new BusinessLogicException(BUSINESS_LOGIC_ERROR);
-            if (multipartFiles.length > 3)
+            if (multipartFiles.size() > 3)
                 throw new OutOfRangeException(FILE_LIMIT_OVER);
 
             // 게시물 저장

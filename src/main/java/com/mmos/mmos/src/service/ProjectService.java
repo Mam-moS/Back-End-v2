@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static com.mmos.mmos.config.HttpResponseStatus.*;
 
@@ -47,7 +48,7 @@ public class ProjectService {
         }
     }
 
-        @Transactional
+    @Transactional
     public List<Project> getProjects(Long calendarIdx, Integer day) throws BaseException {
         try {
             Calendar calendar = calendarService.findCalendarByIdx(calendarIdx);
@@ -285,13 +286,44 @@ public class ProjectService {
 
                     // 같은 number의 프로젝트들 iter
                     for (Project memberProject : projects) {
-                        if(memberProject.getProjectNumber() == num) {
+                        if (memberProject.getProjectNumber() == num) {
                             members.add(new Member(memberProject.getUser()));
                         }
                     }
 
                     result.add(new ProjectTabResponseDto(project, members));
                     num++;
+                }
+            }
+
+            return result;
+        } catch (Exception e) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    @Transactional
+    public ProjectTabResponseDto getAttendProjectWithUsers(Project project) throws BaseException {
+        try {
+            ProjectTabResponseDto result = new ProjectTabResponseDto();
+            if (project.getProjectIsComplete()) {
+
+                List<Project> projects = project.getStudy().getStudyProjects();
+                Long num = project.getProjectNumber();
+                for (Project eachProject : projects) {
+                    if (Objects.equals(eachProject.getProjectNumber(), num)) {
+                        List<Member> members = new ArrayList<>();
+
+                        // 같은 number의 프로젝트들 iter
+                        for (Project memberProject : projects) {
+                            if (Objects.equals(memberProject.getProjectNumber(), num)) {
+                                members.add(new Member(memberProject.getUser()));
+                            }
+                        }
+
+                        result = new ProjectTabResponseDto(project, members);
+                        break;
+                    }
                 }
             }
 

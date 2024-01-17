@@ -25,13 +25,4 @@ public class ProjectTabResponseDto {
         this.place = project.getProjectPlace();
         this.projectInMembers = members;
     }
-
-    public ProjectTabResponseDto(Project project) {
-        this.projectTitle = project.getProjectName();
-        this.studySummary = project.getProjectMemo();
-        this.startDate = project.getProjectStartTime();
-        this.endDate = project.getProjectEndTime();
-        this.place = project.getProjectPlace();
-    }
-
 }

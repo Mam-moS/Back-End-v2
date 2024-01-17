@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.*;
 
-@NoArgsConstructor(access = PROTECTED)
+@NoArgsConstructor
 @Getter
 @Entity
 public class Files {
