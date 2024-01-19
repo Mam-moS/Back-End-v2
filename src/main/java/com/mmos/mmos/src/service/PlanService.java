@@ -59,6 +59,9 @@ public class PlanService {
         try {
             // 객체 가져오기
             Plan plan = findPlanByIdx(planIdx);
+            if(plan.getStudytimeStartTime() != null)
+                throw new BusinessLogicException(PROCEEDING_PLAN);
+
             Planner planner = plan.getPlanner();
             Calendar calendar = planner.getCalendar();
             Users user = planner.getCalendar().getUser();
@@ -79,7 +82,8 @@ public class PlanService {
             }
 
             return plan;
-        } catch (EmptyEntityException e) {
+        } catch (EmptyEntityException |
+                 BusinessLogicException e) {
             throw e;
         } catch (Exception e) {
             e.printStackTrace();

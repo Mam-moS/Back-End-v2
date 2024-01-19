@@ -81,6 +81,7 @@ public enum HttpResponseStatus {
     PLAN_ISVISIBLE_FULL(false, BAD_REQUEST.value(),"캘린더에 표시할 수 없습니다."),
     EMPTY_PLAN(false, BAD_REQUEST.value(),"존재하지 않는 플랜입니다."),
     ALREADY_START_STUDY(false, BAD_REQUEST.value(), "이미 다른 계획이 진행 중입니다."),
+    PROCEEDING_PLAN(false, BAD_REQUEST.value(), "진행 중인 계획은 완수할 수 없습니다."),
 
     // College
     EMPTY_COLLEGE(false, BAD_REQUEST.value(), "해당 대학교에 단과대학이 존재하지 않습니다."),
