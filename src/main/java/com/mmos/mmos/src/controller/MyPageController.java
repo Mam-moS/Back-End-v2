@@ -8,16 +8,16 @@ import com.mmos.mmos.src.domain.dto.request.UpdateIdRequestDto;
 import com.mmos.mmos.src.domain.dto.request.UpdatePwdRequestDto;
 import com.mmos.mmos.src.domain.dto.request.UserDeleteRequestDto;
 import com.mmos.mmos.src.domain.dto.response.MyPageResponseDto;
+import com.mmos.mmos.src.domain.entity.Major;
 import com.mmos.mmos.src.domain.entity.Users;
 import com.mmos.mmos.src.domain.entity.UserBadge;
-import com.mmos.mmos.src.service.AuthService;
-import com.mmos.mmos.src.service.FriendService;
-import com.mmos.mmos.src.service.UserBadgeService;
-import com.mmos.mmos.src.service.UserService;
+import com.mmos.mmos.src.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Objects;
 
 import static com.mmos.mmos.config.HttpResponseStatus.*;
 import static com.mmos.mmos.utils.SHA256.encrypt;
@@ -31,6 +31,7 @@ public class MyPageController extends BaseController {
     private final UserBadgeService userBadgeService;
     private final AuthService authService;
     private final FriendService friendService;
+    private final MajorService majorService;
 
     // 페이지 로드
     @GetMapping("")
@@ -103,19 +104,20 @@ public class MyPageController extends BaseController {
         }
     }
 
-    // 이름 변경
-    @PatchMapping("/name/{name}")
-    public ResponseEntity<ResponseApiMessage> updateName(@AuthenticationPrincipal Users tokenUser, @PathVariable String name) {
+    // 학과 변경
+    @PatchMapping("/major/{majorIndex}")
+    public ResponseEntity<ResponseApiMessage> updateMajor(@AuthenticationPrincipal Users tokenUser, @PathVariable Long majorIndex) {
         try {
             Users user = userService.getUser(tokenUser.getUserIndex());
-            // 기존 이름을 가져오기
-            if(user.getUsername().equals(name))
+            // 기존 전공을 가져오기
+            if(Objects.equals(user.getMajor().getMajorIndex(), majorIndex))
                 // 변경 성공했다는 문구는 뜨지만 사실 업데이트 되진 않았음
-                return sendResponseHttpByJson(SUCCESS, "이름 변경 성공", name);
-            // 이름 변경
-            userService.updateName(user, name);
+                return sendResponseHttpByJson(SUCCESS, "전공 변경 성공", null);
+            // 전공 변경
+            Major newMajor = majorService.getMajor(majorIndex);
+            userService.updateMajor(user, newMajor);
 
-            return sendResponseHttpByJson(SUCCESS, "이름 변경 성공", name);
+            return sendResponseHttpByJson(SUCCESS, "전공 변경 성공", null);
         } catch (BaseException e) {
             return sendResponseHttpByJson(e.getStatus(), e.getStatus().getMessage(), null);
         }

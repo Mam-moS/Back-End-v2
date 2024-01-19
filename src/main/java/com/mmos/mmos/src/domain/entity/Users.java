@@ -161,8 +161,8 @@ public class Users implements UserDetails {
         this.userTopStreak = days;
     }
 
-    public void updateName(String name) {
-        this.userName = name;
+    public void updateMajor(Major major) {
+        this.major = major;
     }
 
     public void updateTotalSchedule(boolean status) {

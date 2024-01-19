@@ -85,9 +85,9 @@ public class UserService {
     }
 
     @Transactional
-    public void updateName(Users user, String name) throws BaseException {
+    public void updateMajor(Users user, Major major) throws BaseException {
         try {
-            user.updateName(name);
+            user.updateMajor(major);
         } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);
         }
