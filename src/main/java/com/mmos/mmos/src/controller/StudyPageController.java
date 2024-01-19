@@ -8,6 +8,7 @@ import com.mmos.mmos.src.domain.entity.*;
 import com.mmos.mmos.src.domain.entity.Post;
 import com.mmos.mmos.src.service.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -145,7 +146,6 @@ public class StudyPageController extends BaseController {
 
             return sendResponseHttpByJson(SUCCESS, "스터디 홍보 글 쓰기 성공", null);
         } catch (BaseException e) {
-            e.printStackTrace();
             return sendResponseHttpByJson(e.getStatus(), e.getStatus().getMessage(), null);
         }
     }
