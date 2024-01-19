@@ -15,6 +15,7 @@ public class MyPageResponseDto {
     private String majorName;
     private String email;
     private boolean isPublic;
+    private Long universityIndex;
 
     public MyPageResponseDto(Users user, String pfp) {
         this.userIdx = user.getUserIndex();
@@ -25,5 +26,6 @@ public class MyPageResponseDto {
         this.majorName = user.getMajor().getMajorName();
         this.email = user.getUserEmail();
         this.isPublic = user.getIsPlannerVisible();
+        this.universityIndex = user.getMajor().getCollege().getUniversity().getUniversityIndex();
     }
 }
