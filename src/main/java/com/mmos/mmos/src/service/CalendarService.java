@@ -106,12 +106,13 @@ public class CalendarService {
                     startDate = project.getProjectStartTime();
                     endDate = project.getProjectEndTime();
 
-                    if(((startDate.getYear() < thisMonth.getYear()) || startDate.getMonthValue() <= thisMonth.getMonthValue())
-                            && ((endDate.getYear() > thisMonth.getYear()) || endDate.getMonthValue() >= thisMonth.getMonthValue())) {
+                    if(((startDate.getYear() < thisMonth.getYear()) || (startDate.getYear() == thisMonth.getYear() && startDate.getMonthValue() <= thisMonth.getMonthValue()))
+                            && ((endDate.getYear() > thisMonth.getYear()) || (endDate.getYear() == thisMonth.getYear() && endDate.getMonthValue() >= thisMonth.getMonthValue()))) {
                         calendarProjectList.add(project);
                     }
                 }
             }
+            
             return new CalendarSectionDto(calendar, calendarProjectList);
         } catch (EmptyEntityException e) {
             throw e;
