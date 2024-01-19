@@ -46,7 +46,6 @@ public class StudyPageController extends BaseController {
 
             for (UserStudy userStudy : user.getUserUserstudies()) {
                 Study study = userStudy.getStudy();
-                // 가장 최근 스터디 ? => 인덱스가 큰 스터디
 
                 // 내가 참석했던 스터디 프로젝트들
                 List<Project> myStudyProjects = projectService.getMyStudyAttendProjects(userStudy);
@@ -61,14 +60,11 @@ public class StudyPageController extends BaseController {
 
                     for (int i = 0; i < myStudyProjects.size(); i++) {
                         Project project = myStudyProjects.get(i);
-                        System.out.println("project.getProjectIndex() = " + project.getProjectIndex());
-                        System.out.println("recentProject.getProjectIndex() = " + recentProject.getProjectIndex());
                         if (project.getProjectIsComplete()) {
                             if (recentProject.getProjectEndTime().isAfter(project.getProjectEndTime())) {
                                 recentProject = project;
                             }
                         }
-                        System.out.println("recentProject = " + recentProject.getProjectIndex());
                     }
                 }
 
