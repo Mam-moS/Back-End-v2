@@ -1,9 +1,6 @@
 package com.mmos.mmos.src.domain.dto.response.home;
 
-import com.mmos.mmos.src.domain.entity.Badge;
-import com.mmos.mmos.src.domain.entity.Friend;
-import com.mmos.mmos.src.domain.entity.Plan;
-import com.mmos.mmos.src.domain.entity.Users;
+import com.mmos.mmos.src.domain.entity.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -27,12 +24,13 @@ public class HomePageResponseDto {
                                Badge tier,
                                Badge nextTier,
                                List<Badge> badges,
-                               Badge pfp) {
+                               Badge pfp,
+                               List<Streak> streakList) {
         // HomeSection
        this.home = new HomeSectionDto(user, badges, pfp);
 
         // Achievement Section
-        this.achievement = new AchievementSectionDto(user, tier, nextTier);
+        this.achievement = new AchievementSectionDto(user, tier, nextTier, streakList);
 
         // Today's To Do Section
         for (Plan plan : plans) {

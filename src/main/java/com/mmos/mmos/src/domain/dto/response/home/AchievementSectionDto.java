@@ -34,7 +34,7 @@ public class AchievementSectionDto {
     // 최근 60일 스트릭 엔티티 조회
     private List<Streak> streakList = new ArrayList<>();
 
-    public AchievementSectionDto(Users user, Badge tier, Badge nextTier) {
+    public AchievementSectionDto(Users user, Badge tier, Badge nextTier, List<Streak> streakList) {
         this.tierIcon = tier.getBadgeIcon();
         this.tierName = tier.getBadgeName();
         this.tierDistribution = tier.getBadgeInfo();
@@ -43,7 +43,7 @@ public class AchievementSectionDto {
         this.totalSchedules = user.getUserTotalScheduleNum();
         this.currentStreakDays = user.getUserCurrentStreak();
         this.topStreakDays = user.getUserTopStreak();
-        this.streakList = user.getStreaks();
+        this.streakList = streakList;
 
         if(user.getUserTotalScheduleNum().equals(0L)){
             this.tierProgress = (int) (user.getUserTotalStudyTime() * 4);

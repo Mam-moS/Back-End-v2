@@ -88,8 +88,10 @@ public class HomePageController extends BaseController {
             }
             // 프사 찾기
             Badge pfp = userBadgeService.getRepresentBadges(userIdx, "pfp").get(0).getBadge();
+            // 최근 60일 스트릭 찾기
+            List<Streak> streakList = streakService.getStreaks(userIdx);
 
-            return sendResponseHttpByJson(SUCCESS, "페이지 로드 성공", new HomePageResponseDto(user, plans, calendar, friends, tier, nextTier, badges, pfp));
+            return sendResponseHttpByJson(SUCCESS, "페이지 로드 성공", new HomePageResponseDto(user, plans, calendar, friends, tier, nextTier, badges, pfp, streakList));
         } catch (BaseException e) {
             return sendResponseHttpByJson(e.getStatus(), e.getStatus().getMessage(), null);
         }
