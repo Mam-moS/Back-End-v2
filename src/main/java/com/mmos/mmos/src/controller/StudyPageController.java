@@ -37,8 +37,7 @@ public class StudyPageController extends BaseController {
 
     // 현재 스터디 기준 가져오기 (전체 정보가 아님) -> 스터디도 페이지로 가져오나? -> 일단 페이지로 가져오자
     @GetMapping("")
-    public ResponseEntity<ResponseApiMessage> getPage(@AuthenticationPrincipal Users tokenUser,
-                                                      @PageableDefault(size = 1, sort = "studyIdx") Pageable studyPage) {
+    public ResponseEntity<ResponseApiMessage> getPage(@AuthenticationPrincipal Users tokenUser) {
         try {
             // 나
             Users user = userService.getUser(tokenUser.getUserIndex());
@@ -82,7 +81,7 @@ public class StudyPageController extends BaseController {
                 result.add(new StudyPageResponseDto(home, project, social, post));
             }
 
-            return sendResponseHttpByJson(SUCCESS, "스터디 페이지 로드 성공", new PageImpl<>(result, studyPage, result.size()));
+            return sendResponseHttpByJson(SUCCESS, "스터디 페이지 로드 성공", result);
         } catch (BaseException e) {
             return sendResponseHttpByJson(e.getStatus(), e.getStatus().getMessage(), null);
         }
