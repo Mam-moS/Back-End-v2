@@ -123,6 +123,7 @@ public class SignUpPageController extends BaseController {
         }
     }
 
+    @PostMapping("/email/reset")
     public ResponseEntity<ResponseApiMessage> clearCertification(@RequestBody String email) {
         try {
             UnivCert.clear("ee5c770b-a868-49c3-9b98-1aaf42383c94", email);
