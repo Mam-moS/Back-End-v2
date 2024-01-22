@@ -6,6 +6,7 @@ import com.mmos.mmos.config.exception.BusinessLogicException;
 import com.mmos.mmos.src.domain.dto.request.CheckEmailDto;
 import com.mmos.mmos.src.domain.dto.request.SendEmailDto;
 import com.mmos.mmos.src.domain.dto.request.SignUpRequestDto;
+import com.mmos.mmos.src.domain.dto.response.social.RankingSectionDto;
 import com.mmos.mmos.src.domain.entity.College;
 import com.mmos.mmos.src.domain.entity.Major;
 import com.mmos.mmos.src.domain.entity.University;
@@ -116,6 +117,16 @@ public class SignUpPageController extends BaseController {
         try {
             Map<String, Object> result = UnivCert.certifyCode("ee5c770b-a868-49c3-9b98-1aaf42383c94", dto.getEmail(), "가천대학교", dto.getCode());
             return sendResponseHttpByJson(SUCCESS, result.get("success").toString(), result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return sendResponseHttpByJson(BUSINESS_LOGIC_ERROR, "서버 오류", null);
+        }
+    }
+
+    public ResponseEntity<ResponseApiMessage> clearCertification(@RequestBody String email) {
+        try {
+            UnivCert.clear("ee5c770b-a868-49c3-9b98-1aaf42383c94", email);
+            return sendResponseHttpByJson(SUCCESS, "초기화 완료", null);
         } catch (Exception e) {
             e.printStackTrace();
             return sendResponseHttpByJson(BUSINESS_LOGIC_ERROR, "서버 오류", null);
