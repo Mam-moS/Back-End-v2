@@ -123,11 +123,12 @@ public class SignUpPageController extends BaseController {
         }
     }
 
-    @PostMapping("/email/reset")
-    public ResponseEntity<ResponseApiMessage> clearCertification(@RequestBody String email) {
+    @PostMapping("/email/reset/{email}")
+    public ResponseEntity<ResponseApiMessage> clearCertification(@PathVariable String email) {
         try {
+            System.out.println(email);
             UnivCert.clear("ee5c770b-a868-49c3-9b98-1aaf42383c94", email);
-            return sendResponseHttpByJson(SUCCESS, "초기화 완료", null);
+            return sendResponseHttpByJson(SUCCESS, "이메일 초기화 완료", email);
         } catch (Exception e) {
             e.printStackTrace();
             return sendResponseHttpByJson(BUSINESS_LOGIC_ERROR, "서버 오류", null);
