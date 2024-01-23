@@ -43,11 +43,6 @@ public class StudyPageController extends BaseController {
             Users user = userService.getUser(tokenUser.getUserIndex());
             List<StudyPageResponseDto> result = new ArrayList<>();
 
-            HomeTabResponseDto home = new HomeTabResponseDto();
-            List<ProjectTabResponseDto> project = new ArrayList<ProjectTabResponseDto>();
-            SocialTabResponseDto social = new SocialTabResponseDto();
-            PostTabResponseDto post = new PostTabResponseDto();
-
             for (UserStudy userStudy : user.getUserUserstudies()) {
                 Study study = userStudy.getStudy();
 
@@ -63,10 +58,10 @@ public class StudyPageController extends BaseController {
                     }
 
                     for (int i = 0; i < myStudyProjects.size(); i++) {
-                        Project thisProject = myStudyProjects.get(i);
-                        if (thisProject.getProjectIsComplete()) {
-                            if (recentProject.getProjectEndTime().isAfter(thisProject.getProjectEndTime())) {
-                                recentProject = thisProject;
+                        Project project = myStudyProjects.get(i);
+                        if (project.getProjectIsComplete()) {
+                            if (recentProject.getProjectEndTime().isAfter(project.getProjectEndTime())) {
+                                recentProject = project;
                             }
                         }
                     }
@@ -77,11 +72,11 @@ public class StudyPageController extends BaseController {
                     members.add(new Member(memberUserStudy));
                 }
 
-                home = new HomeTabResponseDto(study, projectService.getAttendProjectWithUsers(recentProject), members);
-                project = projectService.getMyStudyProjects(study);
+                HomeTabResponseDto home = new HomeTabResponseDto(study, projectService.getAttendProjectWithUsers(recentProject), members);
+                List<ProjectTabResponseDto> project = projectService.getMyStudyProjects(study);
 
-                social = new SocialTabResponseDto(members, study.getStudyMemberNum());
-                post = postService.getStudyPosts(userStudy);
+                SocialTabResponseDto social = new SocialTabResponseDto(members, study.getStudyMemberNum());
+                PostTabResponseDto post = postService.getStudyPosts(userStudy);
 
                 result.add(new StudyPageResponseDto(home, project, social, post));
             }
