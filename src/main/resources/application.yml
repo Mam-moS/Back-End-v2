@@ -19,8 +19,8 @@ cloud:
     s3:
       bucket: m-mos
     credentials:
-      access-key: AKIARVKODTWKSMCLM67I
-      secret-key: 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
+      access-key: ENC(s3D6CwmCVxHa80c01nOQes+OIdVBGgNwMXuIxHmBVzY=)
+      secret-key: ENC(MuDUyn2PA7myllRlw5y2NeJBNBrpImAJNIQiIWI4C43F5twsCzN6pf28nCKUZuBsugRZAUBxruE=)
     region:
       static: ap-northeast-2
       auto: false
