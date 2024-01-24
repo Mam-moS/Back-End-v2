@@ -19,8 +19,8 @@ cloud:
     s3:
       bucket: m-mos
     credentials:
-      access-key: ENC(s3D6CwmCVxHa80c01nOQes+OIdVBGgNwMXuIxHmBVzY=)
-      secret-key: ENC(MuDUyn2PA7myllRlw5y2NeJBNBrpImAJNIQiIWI4C43F5twsCzN6pf28nCKUZuBsugRZAUBxruE=)
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_ACCESS_KEY}
     region:
       static: ap-northeast-2
       auto: false
