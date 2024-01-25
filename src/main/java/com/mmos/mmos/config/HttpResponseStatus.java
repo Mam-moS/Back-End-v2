@@ -148,6 +148,9 @@ public enum HttpResponseStatus {
     // SignUpPage
     EMPTY_EMAIL(false, BAD_REQUEST.value(), "이메일을 입력해주세요"),
 
+    // SocialPage
+    CANNOT_FRIEND_WITH_ME(false, BAD_REQUEST.value(), "자신과 친구할 수 없습니다."),
+
     /**
      * 500 : Database, Server 오류
      */

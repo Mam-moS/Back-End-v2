@@ -2,9 +2,11 @@ package com.mmos.mmos.src.controller;
 
 import com.mmos.mmos.config.ResponseApiMessage;
 import com.mmos.mmos.config.exception.BaseException;
+import com.mmos.mmos.config.exception.BusinessLogicException;
 import com.mmos.mmos.config.exception.NotAuthorizedAccessException;
 import com.mmos.mmos.src.domain.dto.request.CalendarGetRequestDto;
 import com.mmos.mmos.src.domain.dto.response.social.FriendPlannerResponseDto;
+import com.mmos.mmos.src.domain.dto.response.social.SearchFriendResponse;
 import com.mmos.mmos.src.domain.dto.response.social.SocialPageResponseDto;
 import com.mmos.mmos.src.domain.entity.*;
 import com.mmos.mmos.src.service.*;
@@ -44,6 +46,19 @@ public class SocialPageController extends BaseController {
             Integer receivedFriendRequestsNum = friendService.getFriends(userIdx, 3).size();
 
             return sendResponseHttpByJson(SUCCESS, "소셜 페이지 로드 성공", new SocialPageResponseDto(friends, top3, receivedFriendRequestsNum));
+        } catch (BaseException e) {
+            return sendResponseHttpByJson(e.getStatus(), e.getStatus().getMessage(), null);
+        }
+    }
+
+    // 친구 검색
+    @GetMapping("/{friendId}")
+    public ResponseEntity<ResponseApiMessage> searchFriend(@AuthenticationPrincipal Users tokenUser, @PathVariable String friendId) {
+        try {
+            if(tokenUser.getUserId().equals(friendId))
+                throw new BusinessLogicException(CANNOT_FRIEND_WITH_ME);
+
+            return sendResponseHttpByJson(SUCCESS, "친구 찾기 성공", new SearchFriendResponse(userService.findUserById(friendId)));
         } catch (BaseException e) {
             return sendResponseHttpByJson(e.getStatus(), e.getStatus().getMessage(), null);
         }
