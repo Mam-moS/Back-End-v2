@@ -7,12 +7,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class SearchFriendResponse {
+    private Long idx;
     private String name;
     private String id;
     private String universityName;
     private String majorName;
 
     public SearchFriendResponse(Users users) {
+        this.idx = users.getUserIndex();
         this.name = users.getName();
         this.id = users.getUserId();
         this.universityName = users.getMajor().getCollege().getUniversity().getUniversityName();
