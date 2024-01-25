@@ -21,7 +21,6 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final MajorService majorService;
-    private final FriendRepository friendRepository;
 
     public Users findUserByIdx(Long userIdx) throws BaseException {
         return userRepository.findById(userIdx)
@@ -36,6 +35,10 @@ public class UserService {
     public Users findUserByIdAndPwd(Long idx, String pwd) throws BaseException {
         return userRepository.findUserByUserIndexAndUserPassword(idx, pwd)
                 .orElseThrow(() -> new EmptyEntityException(EMPTY_USER));
+    }
+
+    public boolean findUserByEmail(String email) {
+        return userRepository.existsUsersByUserEmail(email);
     }
 
     public boolean isExistById(String id) {

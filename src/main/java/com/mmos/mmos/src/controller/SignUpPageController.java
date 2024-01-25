@@ -3,10 +3,10 @@ package com.mmos.mmos.src.controller;
 import com.mmos.mmos.config.ResponseApiMessage;
 import com.mmos.mmos.config.exception.BaseException;
 import com.mmos.mmos.config.exception.BusinessLogicException;
+import com.mmos.mmos.config.exception.EmptyEntityException;
 import com.mmos.mmos.src.domain.dto.request.CheckEmailDto;
 import com.mmos.mmos.src.domain.dto.request.SendEmailDto;
 import com.mmos.mmos.src.domain.dto.request.SignUpRequestDto;
-import com.mmos.mmos.src.domain.dto.response.social.RankingSectionDto;
 import com.mmos.mmos.src.domain.entity.College;
 import com.mmos.mmos.src.domain.entity.Major;
 import com.mmos.mmos.src.domain.entity.University;
@@ -22,8 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.mmos.mmos.config.HttpResponseStatus.BUSINESS_LOGIC_ERROR;
-import static com.mmos.mmos.config.HttpResponseStatus.SUCCESS;
+import static com.mmos.mmos.config.HttpResponseStatus.*;
 
 @RestController
 @RequestMapping("/api/v1/signup")
@@ -98,6 +97,20 @@ public class SignUpPageController extends BaseController {
             return sendResponseHttpByJson(SUCCESS, "회원가입 성공", user);
         } catch (BaseException e) {
             return sendResponseHttpByJson(e.getStatus(), e.getStatus().getMessage(), null);
+        }
+    }
+
+    @GetMapping("/email")
+    public ResponseEntity<ResponseApiMessage> checkEmailIsExist(@RequestBody SendEmailDto dto) {
+        try {
+            if(dto.getEmail() == null) {
+                throw new EmptyEntityException(EMPTY_EMAIL);
+            }
+
+            return sendResponseHttpByJson(SUCCESS, "이메일 중복 인증 성공", userService.findUserByEmail(dto.getEmail()));
+        } catch (BaseException e) {
+            e.printStackTrace();
+            return sendResponseHttpByJson(BUSINESS_LOGIC_ERROR, "이미 존재하는 이메일입니다.", null);
         }
     }
 

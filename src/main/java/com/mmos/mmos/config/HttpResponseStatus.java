@@ -144,6 +144,10 @@ public enum HttpResponseStatus {
     // Files
     EMPTY_FILE(false,BAD_REQUEST.value(),"존재하지 않는 파일입니다."),
 
+
+    // SignUpPage
+    EMPTY_EMAIL(false, BAD_REQUEST.value(), "이메일을 입력해주세요"),
+
     /**
      * 500 : Database, Server 오류
      */
