@@ -153,15 +153,16 @@ public class SocialPageController extends BaseController {
 
     // 친구 플래너 확인
     @GetMapping("/friendInfo/{friendUserIdx}")
-    public ResponseEntity<ResponseApiMessage> getFriendPlanner(@AuthenticationPrincipal Users tokenUser, @PathVariable Long friendUserIdx) {
+    public ResponseEntity<ResponseApiMessage> getFriendPlanner(@AuthenticationPrincipal Users tokenUser, @PathVariable Long friendIndex) {
         try {
-            Users friend = userService.getUser(friendUserIdx);
-            if (!friend.getIsPlannerVisible())
+            Friend friend = friendService.getFriend(friendIndex);
+            Users friendUser = friend.getUser();
+            if (!friendUser.getIsPlannerVisible())
                 throw new NotAuthorizedAccessException(FORBIDDEN_PLANNER);
-            if (!tokenUser.getUserIndex().equals(friendUserIdx)) {
+            if (!tokenUser.getUserIndex().equals(friendUser.getUserIndex())) {
                 boolean isExist = false;
                 for (Friend myAllFriend : friendService.getFriends(tokenUser.getUserIndex(), 1)) {
-                    if (!myAllFriend.getFriend().equals(friend)) {
+                    if (!myAllFriend.getFriend().equals(friendUser)) {
                         isExist = true;
                         break;
                     }
@@ -171,7 +172,7 @@ public class SocialPageController extends BaseController {
                 }
             }
 
-            Badge tier = userBadgeService.getRepresentBadges(friendUserIdx, "tier").get(0).getBadge();
+            Badge tier = userBadgeService.getRepresentBadges(friendUser.getUserIndex(), "tier").get(0).getBadge();
 
             List<Badge> badges = new ArrayList<>();
             List<UserBadge> userBadges = userBadgeService.getRepresentBadges(tokenUser.getUserIndex(), "badge");
@@ -179,15 +180,15 @@ public class SocialPageController extends BaseController {
                 badges.add(userBadge.getBadge());
             }
 
-            Badge pfp = userBadgeService.getRepresentBadges(friendUserIdx, "pfp").get(0).getBadge();
+            Badge pfp = userBadgeService.getRepresentBadges(friendUser.getUserIndex(), "pfp").get(0).getBadge();
 
             Planner planner = plannerService.getPlannerByCalendarAndDate(calendarService.getCalendar(
-                            friendUserIdx,
+                            friendUser.getUserIndex(),
                             new CalendarGetRequestDto(LocalDate.now().getMonthValue(),
                                     LocalDate.now().getYear())).getIdx(),
                     LocalDate.now());
 
-            return sendResponseHttpByJson(SUCCESS, "친구 플래너 조회 성공", new FriendPlannerResponseDto(friend, tier, badges, pfp, planner));
+            return sendResponseHttpByJson(SUCCESS, "친구 플래너 조회 성공", new FriendPlannerResponseDto(friendUser, tier, badges, pfp, planner));
         } catch (BaseException e) {
             e.printStackTrace();
             return sendResponseHttpByJson(e.getStatus(), e.getStatus().getMessage(), null);

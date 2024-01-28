@@ -44,6 +44,17 @@ public class FriendService {
     }
 
     @Transactional
+    public Friend getFriend(Long friendIdx) throws BaseException {
+        try {
+            return findFriendByIdx(friendIdx);
+        } catch (EmptyEntityException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    @Transactional
     public void friendWithMe(Long userIdx) throws BaseException {
         try {
             Users user = userService.getUser(userIdx);
