@@ -109,7 +109,12 @@ public class SocialPageController extends BaseController {
         try {
             List<Friend> requestList = friendService.getFriends(tokenUser.getUserIndex(), 3);
 
-            return sendResponseHttpByJson(SUCCESS, "받은 친구 요청 목록 조회 성공", requestList);
+            List<SearchFriendResponse> result = new ArrayList<>();
+            for (Friend friend : requestList) {
+                result.add(new SearchFriendResponse(friend.getFriend()));
+            }
+
+            return sendResponseHttpByJson(SUCCESS, "받은 친구 요청 목록 조회 성공", result);
         } catch (BaseException e) {
             return sendResponseHttpByJson(e.getStatus(), e.getStatus().getMessage(), null);
         }
@@ -121,7 +126,12 @@ public class SocialPageController extends BaseController {
         try {
             List<Friend> requestList = friendService.getFriends(tokenUser.getUserIndex(), 2);
 
-            return sendResponseHttpByJson(SUCCESS, "보낸 친구 요청 목록 조회 성공", requestList);
+            List<SearchFriendResponse> result = new ArrayList<>();
+            for (Friend friend : requestList) {
+                result.add(new SearchFriendResponse(friend.getFriend()));
+            }
+
+            return sendResponseHttpByJson(SUCCESS, "보낸 친구 요청 목록 조회 성공", result);
         } catch (BaseException e) {
             return sendResponseHttpByJson(e.getStatus(), e.getStatus().getMessage(), null);
         }

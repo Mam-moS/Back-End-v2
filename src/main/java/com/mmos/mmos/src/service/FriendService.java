@@ -39,11 +39,15 @@ public class FriendService {
                 .orElseThrow(() -> new EmptyEntityException(EMPTY_FRIEND));
     }
 
+    public boolean isAlreadyFriend(Users user, Users friend) throws BaseException {
+        return friendRepository.existsFriendByUserAndFriend(user, friend);
+    }
+
     @Transactional
     public void friendWithMe(Long userIdx) throws BaseException {
         try {
             Users user = userService.getUser(userIdx);
-            if(user.getUserFriends().isEmpty())
+            if (user.getUserFriends().isEmpty())
                 friendRepository.save(new Friend(1, user, user));
 
         } catch (EmptyEntityException e) {
@@ -61,13 +65,13 @@ public class FriendService {
             if (friendStatus == 1) {
                 // 고정 친구 먼저
                 for (Friend friend : friendList) {
-                    if(friend.getFriendIsFixed()) {
+                    if (friend.getFriendIsFixed()) {
                         friendListOrdered.add(friend);
                     }
                 }
                 // 그 다음 고정 친구 아닌 유저
                 for (Friend friend : friendList) {
-                    if(!friend.getFriendIsFixed()) {
+                    if (!friend.getFriendIsFixed()) {
                         friendListOrdered.add(friend);
                     }
                 }
@@ -91,13 +95,13 @@ public class FriendService {
             List<Friend> myFriends = findFriendsByUserIndexAndFriendStatus(userIdx, friendStatus);
             List<Users> top3 = new ArrayList<>();
 
-            if(!myFriends.isEmpty()) {
+            if (!myFriends.isEmpty()) {
                 myFriends.sort(new FriendStudyTimeComparator());
 
                 top3.add(myFriends.get(0).getFriend());
-                if(myFriends.size() > 1)
+                if (myFriends.size() > 1)
                     top3.add(myFriends.get(1).getFriend());
-                if(myFriends.size() > 2)
+                if (myFriends.size() > 2)
                     top3.add(myFriends.get(2).getFriend());
             }
 
@@ -115,21 +119,17 @@ public class FriendService {
             Users user = userService.getUser(userIdx);
             Users friend = userService.findUserById(friendId);
 
-            if(user.equals(friend))
+            // 나 자신과 친구 X
+            if (user.equals(friend))
                 throw new BusinessLogicException(BUSINESS_LOGIC_ERROR);
 
-            Friend response;
-            try {
-                // 이미 친구인지 확인
-                findFriendByUserAndFriend(user, friend);
-                // 이미 친구라면 throw
+            // 이미 친구라면
+            if (isAlreadyFriend(user, friend))
                 throw new DuplicateRequestException(DUPLICATE_FRIEND_REQUEST);
-            } catch (Exception e) {
-                response = friendRepository.save(new Friend(2, user, friend)); // 보낸 사람 Friend에 생기는 객체
-                user.addFriend(response);
-                friend.addFriend(friendRepository.save(new Friend(3, friend, user))); // 보낸 사람 Friend에 생기는 객체
 
-            }
+            Friend response = friendRepository.save(new Friend(2, user, friend)); // 보낸 사람 Friend에 생기는 객체
+            user.addFriend(response);
+            friend.addFriend(friendRepository.save(new Friend(3, friend, user))); // 보낸 사람 Friend에 생기는 객체
 
             return response;
         } catch (EmptyEntityException |
@@ -145,7 +145,7 @@ public class FriendService {
     public Friend acceptFriendRequest(Long userIdx, Long friendIdx) throws BaseException {
         try {
             Friend receiveRequest = findFriendByIdx(friendIdx);
-            if(receiveRequest.getFriend().getUserIndex().equals(userIdx))
+            if (receiveRequest.getFriend().getUserIndex().equals(userIdx))
                 throw new BusinessLogicException(BUSINESS_LOGIC_ERROR);
             else if (receiveRequest.getFriendStatus().equals(1))
                 throw new DuplicateRequestException(DUPLICATE_FRIEND_REQUEST);
@@ -158,7 +158,7 @@ public class FriendService {
             return receiveRequest;
         } catch (EmptyEntityException |
                  DuplicateRequestException |
-                BusinessLogicException e) {
+                 BusinessLogicException e) {
             throw e;
         } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);
@@ -171,7 +171,7 @@ public class FriendService {
             Friend friend1 = findFriendByIdx(friendIdx);
 
             // 내 친구 목록이 아닐 시
-            if(!friend1.getUser().getUserIndex().equals(userIdx))
+            if (!friend1.getUser().getUserIndex().equals(userIdx))
                 throw new BusinessLogicException(BUSINESS_LOGIC_ERROR);
 
             Friend friend2;
@@ -193,7 +193,7 @@ public class FriendService {
     public Friend updateIsFixed(Long userIdx, Long friendIdx) throws BaseException {
         try {
             Friend friend = findFriendByIdx(friendIdx);
-            if(!friend.getUser().getUserIndex().equals(userIdx))
+            if (!friend.getUser().getUserIndex().equals(userIdx))
                 throw new BusinessLogicException(BUSINESS_LOGIC_ERROR);
 
             friend.updateIsFixed(!friend.getFriendIsFixed());
@@ -219,9 +219,9 @@ public class FriendService {
 class FriendStudyTimeComparator implements Comparator<Friend> {
     @Override
     public int compare(Friend o1, Friend o2) {
-        if(o1.getFriend().getUserTotalStudyTime() > o2.getFriend().getUserTotalStudyTime())
+        if (o1.getFriend().getUserTotalStudyTime() > o2.getFriend().getUserTotalStudyTime())
             return -1;
-        else if(o1.getFriend().getUserTotalStudyTime() < o2.getFriend().getUserTotalStudyTime())
+        else if (o1.getFriend().getUserTotalStudyTime() < o2.getFriend().getUserTotalStudyTime())
             return 1;
         return 0;
     }

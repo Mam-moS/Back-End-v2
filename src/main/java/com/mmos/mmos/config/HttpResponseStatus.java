@@ -50,7 +50,7 @@ public enum HttpResponseStatus {
     FRIEND_COMPLETE_REQUEST(false, BAD_REQUEST.value(), "이미 처리된 요청입니다."),
     EMPTY_USER(false, BAD_REQUEST.value(), "존재하지 않는 유저입니다."),
     EMPTY_FRIEND(false, BAD_REQUEST.value(), "존재하지 않는 친구입니다."),
-    DUPLICATE_FRIEND_REQUEST(false, BAD_REQUEST.value(), "중복된 친구 요청입니다."),
+    DUPLICATE_FRIEND_REQUEST(false, BAD_REQUEST.value(), "이미 친구이거나 보낸 요청입니다."),
     LOGIN_FAIL(false, BAD_REQUEST.value(), "아이디와 비밀번호를 확인해주세요"),
     UPDATE_DUPLICATE_ID(false, BAD_REQUEST.value(), "이미 존재하는 아이디입니다."),
     FORBIDDEN_PLANNER(false, BAD_REQUEST.value(), "플래너 비공개 유저입니다."),
