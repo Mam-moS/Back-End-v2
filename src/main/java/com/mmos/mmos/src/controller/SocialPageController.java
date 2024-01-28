@@ -152,7 +152,7 @@ public class SocialPageController extends BaseController {
     }
 
     // 친구 플래너 확인
-    @GetMapping("/friendInfo/{friendUserIdx}")
+    @GetMapping("/friendInfo/{friendIndex}")
     public ResponseEntity<ResponseApiMessage> getFriendPlanner(@AuthenticationPrincipal Users tokenUser, @PathVariable Long friendIndex) {
         try {
             Friend friend = friendService.getFriend(friendIndex);
