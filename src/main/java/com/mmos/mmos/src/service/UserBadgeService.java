@@ -24,8 +24,8 @@ public class UserBadgeService {
     private final UserService userService;
     private final BadgeService badgeService;
 
-    public UserBadge findUserBadgeByIdx(Long userBadgeIdx) throws BaseException {
-        return userBadgeRepository.findById(userBadgeIdx)
+    public UserBadge findUserBadgeByUserAndBadge(Users user, Badge badge) throws BaseException {
+        return userBadgeRepository.findUserBadgeByUserAndBadge(user, badge)
                 .orElseThrow(() -> new EmptyEntityException(EMPTY_USERBADGE));
     }
 
@@ -142,8 +142,10 @@ public class UserBadgeService {
                 userBadge.updateIsVisible(false);
             }
 
-            for (Long userBadgeidx : requestDto.getUserBadgeIdxList()) {
-                UserBadge userBadge = findUserBadgeByIdx(userBadgeidx);
+            Users user = userService.getUser(userIdx);
+            for (Long badgeIdx : requestDto.getUserBadgeIdxList()) {
+                UserBadge userBadge = findUserBadgeByUserAndBadge(user, badgeService.getBadge(badgeIdx));
+                System.out.println("userBadge = " + userBadge);
                 userBadge.updateIsVisible(true);
                 badges.add(userBadge.getBadge());
             }
