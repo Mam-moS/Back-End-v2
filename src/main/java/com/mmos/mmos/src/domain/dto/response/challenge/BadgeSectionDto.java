@@ -10,9 +10,11 @@ import java.util.List;
 @NoArgsConstructor
 public class BadgeSectionDto {
 
-    List<Badge> myBadges;
+    Badge myBadges;
+    boolean isRepresent;
 
-    public BadgeSectionDto(List<Badge> myBadges) {
+    public BadgeSectionDto(Badge myBadges, boolean isRepresent) {
         this.myBadges = myBadges;
+        this.isRepresent = isRepresent;
     }
 }

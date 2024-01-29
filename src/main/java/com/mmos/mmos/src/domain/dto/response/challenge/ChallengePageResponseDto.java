@@ -4,6 +4,7 @@ import com.mmos.mmos.src.domain.entity.Badge;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -11,10 +12,18 @@ import java.util.List;
 public class ChallengePageResponseDto {
 
     UserInfoSectionDto userInfoSection;
-    BadgeSectionDto badgeSection;
+    List<BadgeSectionDto> badges = new ArrayList<>();
 
     public ChallengePageResponseDto(Badge tier, List<Badge> myRepresentBadges, List<Badge> myBadges) {
         this.userInfoSection = new UserInfoSectionDto(tier, myRepresentBadges);
-        this.badgeSection = new BadgeSectionDto(myBadges);
+
+        for (Badge myBadge : myBadges) {
+            boolean isRepresent = false;
+            for (Badge myRepresentBadge : myRepresentBadges) {
+                if(myRepresentBadge.getBadgeIndex() == myBadge.getBadgeIndex())
+                    isRepresent = true;
+            }
+            badges.add(new BadgeSectionDto(myBadge, isRepresent));
+        }
     }
 }
