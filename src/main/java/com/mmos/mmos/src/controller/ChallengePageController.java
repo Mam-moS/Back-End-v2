@@ -41,9 +41,8 @@ public class ChallengePageController extends BaseController {
             for (UserBadge userBadge : myRepresentUserBadge) {
                 myRepresentBadge.add(userBadge.getBadge());
             }
-            List<Badge> allBadges = badgeService.getBadgesByPurpose("badge");
 
-            return sendResponseHttpByJson(SUCCESS, "도전과제 페이지 로드 성공", new ChallengePageResponseDto(tier, myRepresentBadge, myAllBadges, allBadges));
+            return sendResponseHttpByJson(SUCCESS, "도전과제 페이지 로드 성공", new ChallengePageResponseDto(tier, myRepresentBadge, myAllBadges));
         } catch (BaseException e) {
             return sendResponseHttpByJson(e.getStatus(), e.getStatus().getMessage(), null);
         }

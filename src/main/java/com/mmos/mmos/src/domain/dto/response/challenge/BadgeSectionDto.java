@@ -10,11 +10,9 @@ import java.util.List;
 @NoArgsConstructor
 public class BadgeSectionDto {
 
-    List<Badge> allMyBadges;
-    List<Badge> allBadges;
+    List<Badge> myBadges;
 
-    public BadgeSectionDto(List<Badge> allMyBadges, List<Badge> allBadges) {
-        this.allMyBadges = allMyBadges;
-        this.allBadges = allBadges;
+    public BadgeSectionDto(List<Badge> myBadges) {
+        this.myBadges = myBadges;
     }
 }

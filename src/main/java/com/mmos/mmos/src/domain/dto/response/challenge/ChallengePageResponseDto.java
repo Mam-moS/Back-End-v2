@@ -10,11 +10,11 @@ import java.util.List;
 @NoArgsConstructor
 public class ChallengePageResponseDto {
 
-    UserInfoSectionDto userInfoSectionDto;
-    BadgeSectionDto badgeSectionDto;
+    UserInfoSectionDto userInfoSection;
+    BadgeSectionDto badgeSection;
 
-    public ChallengePageResponseDto(Badge tier, List<Badge> myRepresentBadges, List<Badge> myBadges, List<Badge> allBadges) {
-        this.userInfoSectionDto = new UserInfoSectionDto(tier, myRepresentBadges);
-        this.badgeSectionDto = new BadgeSectionDto(myBadges, allBadges);
+    public ChallengePageResponseDto(Badge tier, List<Badge> myRepresentBadges, List<Badge> myBadges) {
+        this.userInfoSection = new UserInfoSectionDto(tier, myRepresentBadges);
+        this.badgeSection = new BadgeSectionDto(myBadges);
     }
 }
