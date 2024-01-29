@@ -5,10 +5,11 @@ import com.mmos.mmos.config.exception.BaseException;
 import com.mmos.mmos.src.domain.dto.request.BadgeUpdateRequestDto;
 import com.mmos.mmos.src.domain.dto.response.challenge.ChallengePageResponseDto;
 import com.mmos.mmos.src.domain.entity.Badge;
-import com.mmos.mmos.src.domain.entity.Users;
 import com.mmos.mmos.src.domain.entity.UserBadge;
+import com.mmos.mmos.src.domain.entity.Users;
 import com.mmos.mmos.src.service.BadgeService;
 import com.mmos.mmos.src.service.UserBadgeService;
+import com.mmos.mmos.src.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -25,6 +26,7 @@ public class ChallengePageController extends BaseController {
 
     private final UserBadgeService userBadgeService;
     private final BadgeService badgeService;
+    private final UserService userService;
 
     @GetMapping("")
     public ResponseEntity<ResponseApiMessage> getPage(@AuthenticationPrincipal Users tokenUser) {
@@ -42,7 +44,13 @@ public class ChallengePageController extends BaseController {
                 myRepresentBadge.add(userBadge.getBadge());
             }
 
-            return sendResponseHttpByJson(SUCCESS, "도전과제 페이지 로드 성공", new ChallengePageResponseDto(tier, myRepresentBadge, myAllBadges));
+            return sendResponseHttpByJson(SUCCESS, "도전과제 페이지 로드 성공",
+                    new ChallengePageResponseDto(tier,
+                                                myRepresentBadge,
+                                                myAllBadges,userService.getUser(userIdx),
+                                                badgeService.getNextTier(tier.getBadgeIndex())
+                    )
+            );
         } catch (BaseException e) {
             return sendResponseHttpByJson(e.getStatus(), e.getStatus().getMessage(), null);
         }
