@@ -24,8 +24,10 @@ public class FriendPlannerResponseDto {
     String pfp;
     // 도전과제
     List<String> badges = new ArrayList<>();
-    // 스트릭
-    List<Streak> streaks = new ArrayList<>();
+    // 최고 스트릭
+    Long topStreaks;
+    // 최근 스트릭
+    Long currentStreak;
     // 오늘 계획
     Planner planner;
 
@@ -39,7 +41,8 @@ public class FriendPlannerResponseDto {
         for (Badge badge : badges) {
             this.badges.add(badge.getBadgeIcon());
         }
-        this.streaks = friend.getStreaks();
+        this.topStreaks = friend.getUserTopStreak();
+        this.currentStreak = friend.getUserCurrentStreak();
         this.planner = planner;
     }
 }
