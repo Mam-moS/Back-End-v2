@@ -157,7 +157,7 @@ public class SocialPageController extends BaseController {
     public ResponseEntity<ResponseApiMessage> getFriendPlanner(@AuthenticationPrincipal Users tokenUser, @PathVariable Long friendIndex) {
         try {
             Friend friend = friendService.getFriend(friendIndex);
-            Users friendUser = friend.getUser();
+            Users friendUser = friend.getFriend();
             if (!friendUser.getIsPlannerVisible())
                 throw new NotAuthorizedAccessException(FORBIDDEN_PLANNER);
             if (!tokenUser.getUserIndex().equals(friendUser.getUserIndex())) {
