@@ -33,7 +33,7 @@ public class FriendPlannerResponseDto {
     // 오늘 계획
     Planner planner;
 
-    List<Project> projects = new ArrayList<>();
+    List<Project> projects;
 
     public FriendPlannerResponseDto(Users friend, Badge tier, List<Badge> badges, Badge pfp, Planner planner) {
         this.name = friend.getName();
@@ -48,7 +48,6 @@ public class FriendPlannerResponseDto {
         this.topStreaks = friend.getUserTopStreak();
         this.currentStreak = friend.getUserCurrentStreak();
         this.planner = planner;
-
 
         List<Project> result = new ArrayList<>();
         for (Project project : friend.getUserProjects()) {
