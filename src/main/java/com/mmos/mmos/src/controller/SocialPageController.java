@@ -6,7 +6,8 @@ import com.mmos.mmos.config.exception.BusinessLogicException;
 import com.mmos.mmos.config.exception.NotAuthorizedAccessException;
 import com.mmos.mmos.src.domain.dto.request.CalendarGetRequestDto;
 import com.mmos.mmos.src.domain.dto.response.social.FriendPlannerResponseDto;
-import com.mmos.mmos.src.domain.dto.response.social.SearchFriendResponse;
+import com.mmos.mmos.src.domain.dto.response.social.GetFriendDto;
+import com.mmos.mmos.src.domain.dto.response.social.SearchFriendDto;
 import com.mmos.mmos.src.domain.dto.response.social.SocialPageResponseDto;
 import com.mmos.mmos.src.domain.entity.*;
 import com.mmos.mmos.src.service.*;
@@ -58,7 +59,7 @@ public class SocialPageController extends BaseController {
             if(tokenUser.getUserId().equals(friendId))
                 throw new BusinessLogicException(CANNOT_FRIEND_WITH_ME);
 
-            return sendResponseHttpByJson(SUCCESS, "친구 찾기 성공", new SearchFriendResponse(userService.findUserById(friendId)));
+            return sendResponseHttpByJson(SUCCESS, "친구 찾기 성공", new SearchFriendDto(userService.findUserById(friendId)));
         } catch (BaseException e) {
             return sendResponseHttpByJson(e.getStatus(), e.getStatus().getMessage(), null);
         }
@@ -109,9 +110,9 @@ public class SocialPageController extends BaseController {
         try {
             List<Friend> requestList = friendService.getFriends(tokenUser.getUserIndex(), 3);
 
-            List<SearchFriendResponse> result = new ArrayList<>();
+            List<GetFriendDto> result = new ArrayList<>();
             for (Friend friend : requestList) {
-                result.add(new SearchFriendResponse(friend.getFriend()));
+                result.add(new GetFriendDto(friend));
             }
 
             return sendResponseHttpByJson(SUCCESS, "받은 친구 요청 목록 조회 성공", result);
@@ -126,9 +127,9 @@ public class SocialPageController extends BaseController {
         try {
             List<Friend> requestList = friendService.getFriends(tokenUser.getUserIndex(), 2);
 
-            List<SearchFriendResponse> result = new ArrayList<>();
+            List<GetFriendDto> result = new ArrayList<>();
             for (Friend friend : requestList) {
-                result.add(new SearchFriendResponse(friend.getFriend()));
+                result.add(new GetFriendDto(friend));
             }
 
             return sendResponseHttpByJson(SUCCESS, "보낸 친구 요청 목록 조회 성공", result);
