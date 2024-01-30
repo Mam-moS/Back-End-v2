@@ -33,7 +33,7 @@ public class FriendPlannerResponseDto {
     // 오늘 계획
     Planner planner;
 
-    List<Project> projects;
+    List<Project> projects = new ArrayList<>();
 
     public FriendPlannerResponseDto(Users friend, Badge tier, List<Badge> badges, Badge pfp, Planner planner) {
         this.name = friend.getName();
