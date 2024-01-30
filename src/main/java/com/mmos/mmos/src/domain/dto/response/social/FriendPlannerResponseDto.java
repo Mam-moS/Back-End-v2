@@ -33,7 +33,7 @@ public class FriendPlannerResponseDto {
     // 오늘 계획
     Planner planner;
 
-    List<Project> projects = new ArrayList<>();
+    List<Project> projects;
 
     public FriendPlannerResponseDto(Users friend, Badge tier, List<Badge> badges, Badge pfp, Planner planner) {
         this.name = friend.getName();
@@ -50,11 +50,14 @@ public class FriendPlannerResponseDto {
         this.planner = planner;
 
 
+        List<Project> result = new ArrayList<>();
         for (Project project : friend.getUserProjects()) {
             if(project.getProjectStartTime().isBefore(LocalDate.now()) || project.getProjectStartTime().isEqual(LocalDate.now())
                 && project.getProjectEndTime().isAfter(LocalDate.now()) || project.getProjectEndTime().isEqual(LocalDate.now())) {
-                projects.add(project);
+                result.add(project);
             }
         }
+
+        this.projects = result;
     }
 }
