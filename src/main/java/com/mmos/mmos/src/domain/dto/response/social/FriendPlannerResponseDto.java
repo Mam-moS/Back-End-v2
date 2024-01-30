@@ -4,7 +4,9 @@ import com.mmos.mmos.src.domain.entity.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -31,6 +33,8 @@ public class FriendPlannerResponseDto {
     // 오늘 계획
     Planner planner;
 
+    List<Project> projects = new ArrayList<>();
+
     public FriendPlannerResponseDto(Users friend, Badge tier, List<Badge> badges, Badge pfp, Planner planner) {
         this.name = friend.getName();
         this.id = friend.getUserId();
@@ -44,5 +48,13 @@ public class FriendPlannerResponseDto {
         this.topStreaks = friend.getUserTopStreak();
         this.currentStreak = friend.getUserCurrentStreak();
         this.planner = planner;
+
+
+        for (Project project : friend.getUserProjects()) {
+            if(project.getProjectStartTime().isBefore(LocalDate.now()) || project.getProjectStartTime().isEqual(LocalDate.now())
+                && project.getProjectEndTime().isAfter(LocalDate.now()) || project.getProjectEndTime().isEqual(LocalDate.now())) {
+                projects.add(project);
+            }
+        }
     }
 }
