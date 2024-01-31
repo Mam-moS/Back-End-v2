@@ -13,7 +13,7 @@
 ![mmosERD](https://github.com/Mam-moS/Back-End-v2/assets/96408601/05d90b62-7d15-4482-9fac-cc9e5d8878c7)
 
 <BR>
-<hr>
+<br>
 
 
 ## ⚒️ Tech Stack
