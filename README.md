@@ -1,7 +1,5 @@
 # ⚒️ Tech Stack
 
----
-
 ### 언어 및 프레임워크
 
 [![stackticon](https://firebasestorage.googleapis.com/v0/b/stackticon-81399.appspot.com/o/images%2F1706683542436?alt=media&token=021defc3-7150-4301-87d8-7631c18e0436)](https://github.com/msdio/stackticon)
