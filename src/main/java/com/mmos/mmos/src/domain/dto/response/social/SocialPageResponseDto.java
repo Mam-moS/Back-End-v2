@@ -11,11 +11,14 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class SocialPageResponseDto {
-    List<RankingSectionDto> ranking = new ArrayList<>();
-    List<FriendSectionDto> friend = new ArrayList<>();
-    Integer friendRequestNum;
+    private Long userIdx;
+    private List<RankingSectionDto> ranking = new ArrayList<>();
+    private List<FriendSectionDto> friend = new ArrayList<>();
+    private Integer friendRequestNum;
 
-    public SocialPageResponseDto(List<Friend> friends, List<Users> top3, Integer requestNum) {
+    public SocialPageResponseDto(Long userIdx, List<Friend> friends, List<Users> top3, Integer requestNum) {
+        this.userIdx = userIdx;
+
         for (Users user : top3) {
             this.ranking.add(new RankingSectionDto(user));
         }

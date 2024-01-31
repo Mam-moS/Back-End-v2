@@ -46,7 +46,7 @@ public class SocialPageController extends BaseController {
             List<Users> top3 = friendService.getTop3Friends(userIdx, 1);
             Integer receivedFriendRequestsNum = friendService.getFriends(userIdx, 3).size();
 
-            return sendResponseHttpByJson(SUCCESS, "소셜 페이지 로드 성공", new SocialPageResponseDto(friends, top3, receivedFriendRequestsNum));
+            return sendResponseHttpByJson(SUCCESS, "소셜 페이지 로드 성공", new SocialPageResponseDto(tokenUser.getUserIndex(), friends, top3, receivedFriendRequestsNum));
         } catch (BaseException e) {
             return sendResponseHttpByJson(e.getStatus(), e.getStatus().getMessage(), null);
         }
