@@ -14,13 +14,6 @@ public class Member {
     private String majorName;
     private String status;
 
-    public Member(Users user) {
-        this.name = user.getName();
-        this.id = user.getUserId();
-        this.universityName = user.getMajor().getCollege().getUniversity().getUniversityName();
-        this.majorName = user.getMajor().getMajorName();
-    }
-
     public Member(UserStudy userStudy) {
         this.name = userStudy.getUser().getName();
         this.id = userStudy.getUser().getUserId();

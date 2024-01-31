@@ -287,7 +287,12 @@ public class ProjectService {
                     // 같은 number의 프로젝트들 iter
                     for (Project memberProject : projects) {
                         if (memberProject.getProjectNumber() == num) {
-                            members.add(new Member(memberProject.getUser()));
+                            for (UserStudy userStudy : memberProject.getStudy().getStudyUserstudies()) {
+                                if (userStudy.getUser() == memberProject.getUser()) {
+                                    members.add(new Member(userStudy));
+                                    break;
+                                }
+                            }
                         }
                     }
 
@@ -317,7 +322,12 @@ public class ProjectService {
                         // 같은 number의 프로젝트들 iter
                         for (Project memberProject : projects) {
                             if (Objects.equals(memberProject.getProjectNumber(), num)) {
-                                members.add(new Member(memberProject.getUser()));
+                                for (UserStudy userStudy : memberProject.getStudy().getStudyUserstudies()) {
+                                    if (userStudy.getUser() == memberProject.getUser()) {
+                                        members.add(new Member(userStudy));
+                                        break;
+                                    }
+                                }
                             }
                         }
 
