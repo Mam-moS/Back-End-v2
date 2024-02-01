@@ -9,27 +9,30 @@ import java.time.LocalDate;
 @Getter
 @NoArgsConstructor
 public class FriendSectionDto {
-    Long friendIndex;
+    // 친구 객체 인덱스
+    private Long friendIndex;
+    // 친구 유저 인덱스
+    private Long friendUserIndex;
     // 티어
-    String tier;
+    private String tier;
     // 프사
-    String pfp;
+    private String pfp;
     // 이름
-    String name;
+    private String name;
     // 아이디
-    String id;
+    private String id;
     // 이번 주 공부 시간
-    Long weeklyStudyTime;
+    private Long weeklyStudyTime;
     // 오늘 공부 시간
-    Long dailyStudyTime;
+    private Long dailyStudyTime;
     // 소속 대학명
-    String universityName;
+    private String universityName;
     // 소속 전공
-    String majorName;
+    private String majorName;
     // 접속 여부
-    Boolean isOnline = false;
+    private Boolean isOnline = false;
     // 고정 친구 여부
-    Boolean isFixed;
+    private Boolean isFixed;
 
     public FriendSectionDto(Friend user) {
         this.friendIndex = user.getFriendIndex();
@@ -39,6 +42,7 @@ public class FriendSectionDto {
             if (userUserbadge.getBadge().getBadgePurpose().equals("tier") && userUserbadge.getUserbadgeIsVisible())
                 this.tier = userUserbadge.getBadge().getBadgeIcon();
         }
+        this.friendUserIndex = user.getFriend().getUserIndex();
         this.name = user.getFriend().getName();
         this.id = user.getFriend().getUserId();
         this.weeklyStudyTime = user.getFriend().getUserWeeklyStudyTime();
