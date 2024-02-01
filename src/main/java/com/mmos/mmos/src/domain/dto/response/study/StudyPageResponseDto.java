@@ -10,12 +10,14 @@ import java.util.List;
 @NoArgsConstructor
 public class StudyPageResponseDto {
 
-    HomeTabResponseDto home;
-    List<ProjectTabResponseDto> project;
-    SocialTabResponseDto social;
-    PostTabResponseDto post;
+    private Long userStudyIndex;
+    private HomeTabResponseDto home;
+    private List<ProjectTabResponseDto> project;
+    private SocialTabResponseDto social;
+    private PostTabResponseDto post;
 
-    public StudyPageResponseDto(HomeTabResponseDto home, List<ProjectTabResponseDto> project, SocialTabResponseDto social, PostTabResponseDto post) {
+    public StudyPageResponseDto(Long userStudyIndex, HomeTabResponseDto home, List<ProjectTabResponseDto> project, SocialTabResponseDto social, PostTabResponseDto post) {
+        this.userStudyIndex = userStudyIndex;
         this.home = home;
         this.project = project;
         this.social = social;

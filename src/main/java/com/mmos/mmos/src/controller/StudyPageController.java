@@ -78,7 +78,7 @@ public class StudyPageController extends BaseController {
                 SocialTabResponseDto social = new SocialTabResponseDto(members, study.getStudyMemberNum());
                 PostTabResponseDto post = postService.getStudyPosts(userStudy);
 
-                result.add(new StudyPageResponseDto(home, project, social, post));
+                result.add(new StudyPageResponseDto(userStudy.getUserStudyIndex(), home, project, social, post));
             }
 
             return sendResponseHttpByJson(SUCCESS, "스터디 페이지 로드 성공", result);
