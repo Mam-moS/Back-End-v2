@@ -7,7 +7,10 @@ import com.mmos.mmos.src.domain.dto.request.PostSaveRequestDto;
 import com.mmos.mmos.src.domain.dto.response.study.NoticeSectionDto;
 import com.mmos.mmos.src.domain.dto.response.study.PostTabResponseDto;
 import com.mmos.mmos.src.domain.dto.response.study.PromotionSectionDto;
-import com.mmos.mmos.src.domain.entity.*;
+import com.mmos.mmos.src.domain.entity.Post;
+import com.mmos.mmos.src.domain.entity.Study;
+import com.mmos.mmos.src.domain.entity.UserStudy;
+import com.mmos.mmos.src.domain.entity.Users;
 import com.mmos.mmos.src.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -116,16 +119,16 @@ public class PostService {
 
     // 홍보 게시글 전체 조회
     @Transactional
-    public Page<PromotionSectionDto> getPromotions(Pageable pageable) throws BaseException {
+    public List<PromotionSectionDto> getPromotions() throws BaseException {
         try {
-            List<PromotionSectionDto> responseDtoList = new ArrayList<>();
+            List<PromotionSectionDto> result = new ArrayList<>();
             List<Post> posts = findPostsByPromotionPost();
 
             for (Post post : posts) {
-                responseDtoList.add(new PromotionSectionDto(post));
+                result.add(new PromotionSectionDto(post));
             }
 
-            return new PageImpl<>(responseDtoList, pageable, responseDtoList.size());
+            return result;
         } catch (EmptyEntityException e) {
             throw e;
         } catch (Exception e) {
@@ -133,24 +136,6 @@ public class PostService {
         }
     }
 
-    // 내 스터디 공지 게시글 조회 (페이징 버전)
-//    @Transactional
-//    public Page<NoticeSectionDto> getNotices(UserStudy userStudy, Pageable pageable) throws BaseException {
-//        try {
-//            List<NoticeSectionDto> responseDtoList = new ArrayList<>();
-//            Study study = userStudy.getStudy();
-//
-//            for (Post studyPost : study.getStudyPosts()) {
-//                responseDtoList.add(new NoticeSectionDto(studyPost));
-//            }
-//
-//            return new PageImpl<>(responseDtoList, pageable, responseDtoList.size());
-//        } catch (Exception e) {
-//            throw new BaseException(DATABASE_ERROR);
-//        }
-//    }
-
-    // 내 스터디 공지 게시글 조회 (리스트 버전)
     @Transactional
     public PostTabResponseDto getStudyPosts(UserStudy userStudy) throws BaseException {
         try {

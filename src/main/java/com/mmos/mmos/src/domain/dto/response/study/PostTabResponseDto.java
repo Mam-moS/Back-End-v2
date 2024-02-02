@@ -1,6 +1,5 @@
 package com.mmos.mmos.src.domain.dto.response.study;
 
-import com.mmos.mmos.src.domain.entity.Post;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

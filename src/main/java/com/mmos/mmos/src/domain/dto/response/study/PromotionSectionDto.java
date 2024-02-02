@@ -15,6 +15,8 @@ public class PromotionSectionDto {
     private String title;
     // 스터디 이름
     private String studyName;
+    // 홍보 내용
+    private String content;
     // 작성 시간
     private Timestamp createdAt;
     // 수정 시간
@@ -23,6 +25,7 @@ public class PromotionSectionDto {
     public PromotionSectionDto(Post post) {
         this.idx = post.getPostIndex();
         this.title = post.getPostTitle();
+        this.content = post.getPostContents();
         this.studyName = post.getStudy().getStudyName();
         this.createdAt = post.getPostCreatedAt();
         this.updatedAt = post.getPostUpdatedAt();

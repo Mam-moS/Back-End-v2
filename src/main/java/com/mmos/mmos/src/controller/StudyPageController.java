@@ -5,11 +5,8 @@ import com.mmos.mmos.config.exception.*;
 import com.mmos.mmos.src.domain.dto.request.*;
 import com.mmos.mmos.src.domain.dto.response.study.*;
 import com.mmos.mmos.src.domain.entity.*;
-import com.mmos.mmos.src.domain.entity.Post;
 import com.mmos.mmos.src.service.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -52,8 +49,8 @@ public class StudyPageController extends BaseController {
                 // 가장 최근에 내가 참여한 프로젝트 가져오기
                 Project recentProject = new Project();
                 if (!myStudyProjects.isEmpty()) {
-                    for(int i = 0; i < myStudyProjects.size(); i++) {
-                        if(myStudyProjects.get(i).getProjectIsComplete())
+                    for (int i = 0; i < myStudyProjects.size(); i++) {
+                        if (myStudyProjects.get(i).getProjectIsComplete())
                             recentProject = myStudyProjects.get(i);
                     }
 
@@ -78,7 +75,7 @@ public class StudyPageController extends BaseController {
                 SocialTabResponseDto social = new SocialTabResponseDto(members, study.getStudyMemberNum());
                 PostTabResponseDto post = postService.getStudyPosts(userStudy);
 
-                result.add(new StudyPageResponseDto(userStudy.getUserStudyIndex(), home, project, social, post));
+                result.add(new StudyPageResponseDto(userStudy.getUserStudyIndex(), home, project, social, post.getNotices(), postService.getPromotions(), post.getPromotions()));
             }
 
             return sendResponseHttpByJson(SUCCESS, "스터디 페이지 로드 성공", result);
