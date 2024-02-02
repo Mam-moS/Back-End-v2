@@ -43,9 +43,8 @@ public class PostService {
                 .orElseThrow(() -> new EmptyEntityException(EMPTY_POST));
     }
 
-    public List<Post> findPostsByNoticePost() throws BaseException {
-        return postRepository.findPostsByPostIsNoticeIsTrue()
-                .orElseThrow(() -> new EmptyEntityException(EMPTY_POST));
+    public List<Post> findNoticesTop5(Study study) throws BaseException {
+        return postRepository.findTop5ByStudyAndPostIsNoticeIsTrueOrderByPostIndexDesc(study);
     }
 
     public List<Post> searchPromotion(String searchStr) throws BaseException {

@@ -69,7 +69,7 @@ public class StudyPageController extends BaseController {
                     members.add(new Member(memberUserStudy));
                 }
 
-                HomeTabResponseDto home = new HomeTabResponseDto(study, projectService.getAttendProjectWithUsers(recentProject), members);
+                HomeTabResponseDto home = new HomeTabResponseDto(study, projectService.getAttendProjectWithUsers(recentProject), members, postService.findNoticesTop5(study));
                 List<ProjectTabResponseDto> project = projectService.getMyStudyProjects(study);
 
                 SocialTabResponseDto social = new SocialTabResponseDto(members, study.getStudyMemberNum());
