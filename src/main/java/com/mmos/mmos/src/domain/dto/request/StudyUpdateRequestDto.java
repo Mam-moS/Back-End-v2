@@ -8,5 +8,6 @@ import lombok.NoArgsConstructor;
 public class StudyUpdateRequestDto {
     private String newName;
     private String newMemo;
+    private Integer memberLimit;
     private Boolean isComplete;
 }

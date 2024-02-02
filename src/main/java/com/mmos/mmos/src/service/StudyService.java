@@ -40,6 +40,9 @@ public class StudyService {
                 study.updateStudyName(requestDto.getNewName());
             if(!requestDto.getNewMemo().isEmpty())
                 study.updateStudyMemo(requestDto.getNewMemo());
+            if(requestDto.getMemberLimit() != null) {
+                study.updateMemberNum(requestDto.getMemberLimit());
+            }
             if(requestDto.getIsComplete() != null) {
                 study.updateStudyIsComplete();
                 postRepository.deleteAll(study.getStudyPosts());
