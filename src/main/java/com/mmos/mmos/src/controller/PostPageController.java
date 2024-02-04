@@ -23,7 +23,7 @@ public class PostPageController extends BaseController {
     public ResponseEntity<ResponseApiMessage> getPage(@PathVariable Long postIdx) {
         try {
             Post post = postService.getPost(postIdx);
-            return sendResponseHttpByJson(SUCCESS, "글 조회 성공", post);
+            return sendResponseHttpByJson(SUCCESS, "글 조회 성공", new PostPageResponseDto(post));
         } catch (BaseException e) {
             return sendResponseHttpByJson(e.getStatus(), e.getStatus().getMessage(), null);
         }

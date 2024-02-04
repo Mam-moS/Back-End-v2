@@ -29,6 +29,7 @@ public class Post {
     @Column
     private String postContents;
 
+    // 삭제
     @Column
     private String postImage;
 
