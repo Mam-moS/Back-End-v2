@@ -5,9 +5,13 @@ import com.mmos.mmos.config.exception.BaseException;
 import com.mmos.mmos.src.domain.dto.request.PostSaveRequestDto;
 import com.mmos.mmos.src.domain.dto.response.post.PostPageResponseDto;
 import com.mmos.mmos.src.domain.entity.Post;
+import com.mmos.mmos.src.domain.entity.UserStudy;
+import com.mmos.mmos.src.domain.entity.Users;
 import com.mmos.mmos.src.service.PostService;
+import com.mmos.mmos.src.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import static com.mmos.mmos.config.HttpResponseStatus.SUCCESS;
@@ -18,12 +22,26 @@ import static com.mmos.mmos.config.HttpResponseStatus.SUCCESS;
 public class PostPageController extends BaseController {
 
     private final PostService postService;
+    private final UserService userService;
 
     @GetMapping("/{postIdx}")
-    public ResponseEntity<ResponseApiMessage> getPage(@PathVariable Long postIdx) {
+    public ResponseEntity<ResponseApiMessage> getPage(@AuthenticationPrincipal Users tokenUser, @PathVariable Long postIdx) {
         try {
             Post post = postService.getPost(postIdx);
-            return sendResponseHttpByJson(SUCCESS, "글 조회 성공", new PostPageResponseDto(post));
+            Users user = userService.getUser(tokenUser.getUserIndex());
+
+            boolean isLeader = false;
+            for (UserStudy postUserStudy : post.getStudy().getStudyUserstudies()) {
+                for (UserStudy userUserstudy : user.getUserUserstudies()) {
+                    if(userUserstudy.equals(postUserStudy)) {
+                        if (postUserStudy.getUserStudyMemberStatus() == 1) {
+                            isLeader = true;
+                        }
+                    }
+                }
+            }
+
+            return sendResponseHttpByJson(SUCCESS, "글 조회 성공", new PostPageResponseDto(post, isLeader));
         } catch (BaseException e) {
             return sendResponseHttpByJson(e.getStatus(), e.getStatus().getMessage(), null);
         }

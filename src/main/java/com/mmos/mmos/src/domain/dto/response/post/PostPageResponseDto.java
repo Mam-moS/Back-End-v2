@@ -14,9 +14,11 @@ public class PostPageResponseDto {
 
     private Post post;
     private List<Files> images;
+    private boolean isLeader;
 
-    public PostPageResponseDto(Post post) {
+    public PostPageResponseDto(Post post, boolean isLeader) {
         this.post = post;
         images = post.getFiles();
+        this.isLeader = isLeader;
     }
 }
