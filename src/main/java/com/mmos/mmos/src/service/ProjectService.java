@@ -189,7 +189,6 @@ public class ProjectService {
                 throw new BusinessLogicException(BUSINESS_LOGIC_ERROR);
 
             // 시간도 수정할 수 있도록 수정
-
             if (isStudyPage) {
                 for (Project studyProject : project.getStudy().getStudyProjects()) {
                     if (studyProject.getProjectNumber().equals(project.getProjectNumber())) {
@@ -232,6 +231,15 @@ public class ProjectService {
             throw e;
         } catch (BaseException e) {
             e.printStackTrace();
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    @Transactional
+    public void updateProjectSummary(Project project, String summary) throws BaseException {
+        try {
+            project.updateSummary(summary);
+        } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);
         }
     }

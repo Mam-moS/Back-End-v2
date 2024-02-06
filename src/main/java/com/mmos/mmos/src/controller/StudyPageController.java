@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static com.mmos.mmos.config.HttpResponseStatus.*;
 
@@ -110,6 +111,30 @@ public class StudyPageController extends BaseController {
             UserStudy userStudy = userStudyService.getUserStudy(userStudyIdx);
             return sendResponseHttpByJson(SUCCESS, "스터디 수정 성공",
                     studyService.updateStudy(userStudy.getStudy().getStudyIndex(), requestDto));
+        } catch (BaseException e) {
+            return sendResponseHttpByJson(e.getStatus(), e.getStatus().getMessage(), null);
+        }
+    }
+
+    // 스터디 프로젝트 Summary 수정
+    @PatchMapping("/{userStudyIdx}/{projectIdx}")
+    public ResponseEntity<ResponseApiMessage> updateProjectSummary(@PathVariable Long userStudyIdx,
+                                                                   @PathVariable Long projectIdx,
+                                                                   @RequestBody String newSummary) {
+        try {
+            UserStudy userStudy = userStudyService.getUserStudy(userStudyIdx);
+            if(userStudy.getUserStudyMemberStatus() != 1)
+                throw new NotAuthorizedAccessException(NOT_AUTHORIZED);
+
+            Study study = userStudy.getStudy();
+
+            Project project = projectService.getProject(projectIdx);
+            for (Project studyProject : study.getStudyProjects()) {
+                if(Objects.equals(project.getProjectNumber(), studyProject.getProjectNumber())) {
+                    projectService.updateProjectSummary(studyProject, newSummary);
+                }
+            }
+            return sendResponseHttpByJson(SUCCESS, "스터디 프로젝트 요약 수정 성공", null);
         } catch (BaseException e) {
             return sendResponseHttpByJson(e.getStatus(), e.getStatus().getMessage(), null);
         }

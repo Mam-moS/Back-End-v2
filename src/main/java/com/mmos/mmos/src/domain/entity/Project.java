@@ -98,4 +98,8 @@ public class Project {
     public void updateIsAttend() {
         projectIsAttend = !projectIsAttend;
     }
+
+    public void updateSummary(String summary) {
+        this.projectMemo = summary;
+    }
 }
