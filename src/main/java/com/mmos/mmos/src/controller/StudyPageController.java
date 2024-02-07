@@ -120,7 +120,7 @@ public class StudyPageController extends BaseController {
     @PatchMapping("/project/{userStudyIdx}/{projectIdx}")
     public ResponseEntity<ResponseApiMessage> updateProjectSummary(@PathVariable Long userStudyIdx,
                                                                    @PathVariable Long projectIdx,
-                                                                   @RequestBody String newSummary) {
+                                                                   @RequestBody UpdateStudyProjectSummary requestDto) {
         try {
             UserStudy userStudy = userStudyService.getUserStudy(userStudyIdx);
             if(userStudy.getUserStudyMemberStatus() != 1)
@@ -131,7 +131,7 @@ public class StudyPageController extends BaseController {
             Project project = projectService.getProject(projectIdx);
             for (Project studyProject : study.getStudyProjects()) {
                 if(Objects.equals(project.getProjectNumber(), studyProject.getProjectNumber())) {
-                    projectService.updateProjectSummary(studyProject, newSummary);
+                    projectService.updateProjectSummary(studyProject, requestDto.getNewSummary());
                 }
             }
             return sendResponseHttpByJson(SUCCESS, "스터디 프로젝트 요약 수정 성공", null);
