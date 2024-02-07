@@ -117,7 +117,7 @@ public class StudyPageController extends BaseController {
     }
 
     // 스터디 프로젝트 Summary 수정
-    @PatchMapping("/{userStudyIdx}/{projectIdx}")
+    @PatchMapping("/project/{userStudyIdx}/{projectIdx}")
     public ResponseEntity<ResponseApiMessage> updateProjectSummary(@PathVariable Long userStudyIdx,
                                                                    @PathVariable Long projectIdx,
                                                                    @RequestBody String newSummary) {
