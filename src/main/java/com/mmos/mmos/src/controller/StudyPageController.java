@@ -85,6 +85,42 @@ public class StudyPageController extends BaseController {
         }
     }
 
+    @GetMapping("/invite")
+    public ResponseEntity<ResponseApiMessage> getMyInviteRequest(@AuthenticationPrincipal Users tokenUser) {
+        try {
+            Users user = userService.getUser(tokenUser.getUserIndex());
+
+            List<GetStudyListDto> result = new ArrayList<>();
+            for (UserStudy userStudy : user.getUserUserstudies()) {
+                if (userStudy.getUserStudyMemberStatus() == 3) {
+                    result.add(new GetStudyListDto(userStudy));
+                }
+            }
+
+            return sendResponseHttpByJson(SUCCESS, "내가 받은 초대 요청 목록 조회 성공", result);
+        } catch (BaseException e) {
+            return sendResponseHttpByJson(e.getStatus(), e.getStatus().getMessage(), null);
+        }
+    }
+
+    @GetMapping("/join")
+    public ResponseEntity<ResponseApiMessage> getMyJoinRequest(@AuthenticationPrincipal Users tokenUser) {
+        try {
+            Users user = userService.getUser(tokenUser.getUserIndex());
+
+            List<GetStudyListDto> result = new ArrayList<>();
+            for (UserStudy userStudy : user.getUserUserstudies()) {
+                if (userStudy.getUserStudyMemberStatus() == 4) {
+                    result.add(new GetStudyListDto(userStudy));
+                }
+            }
+
+            return sendResponseHttpByJson(SUCCESS, "내가 보낸 참가 요청 목록 조회 성공", result);
+        } catch (BaseException e) {
+            return sendResponseHttpByJson(e.getStatus(), e.getStatus().getMessage(), null);
+        }
+    }
+
     // 스터디 생성
     @PostMapping("")
     public ResponseEntity<ResponseApiMessage> saveStudy(@AuthenticationPrincipal Users tokenUser, @RequestBody StudySaveRequestDto requestDto) {
@@ -123,14 +159,14 @@ public class StudyPageController extends BaseController {
                                                                    @RequestBody UpdateStudyProjectSummary requestDto) {
         try {
             UserStudy userStudy = userStudyService.getUserStudy(userStudyIdx);
-            if(userStudy.getUserStudyMemberStatus() != 1)
+            if (userStudy.getUserStudyMemberStatus() != 1)
                 throw new NotAuthorizedAccessException(NOT_AUTHORIZED);
 
             Study study = userStudy.getStudy();
 
             Project project = projectService.getProject(projectIdx);
             for (Project studyProject : study.getStudyProjects()) {
-                if(Objects.equals(project.getProjectNumber(), studyProject.getProjectNumber())) {
+                if (Objects.equals(project.getProjectNumber(), studyProject.getProjectNumber())) {
                     projectService.updateProjectSummary(studyProject, requestDto.getNewSummary());
                 }
             }
