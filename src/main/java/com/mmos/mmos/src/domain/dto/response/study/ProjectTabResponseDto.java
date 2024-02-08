@@ -10,6 +10,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class ProjectTabResponseDto {
+    private Long projectIdx;
     private String projectTitle;
     private String studySummary;
     private LocalDate startDate;
@@ -18,6 +19,7 @@ public class ProjectTabResponseDto {
     private List<Member> projectInMembers;
 
     public ProjectTabResponseDto(Project project, List<Member> members) {
+        this.projectIdx = project.getProjectIndex();
         this.projectTitle = project.getProjectName();
         this.studySummary = project.getProjectMemo();
         this.startDate = project.getProjectStartTime();
