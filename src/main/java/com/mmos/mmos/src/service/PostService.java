@@ -67,7 +67,8 @@ public class PostService {
             study.addPost(post);
 
             return postRepository.save(post);
-        } catch (EmptyEntityException e) {
+        } catch (EmptyEntityException |
+                 NotAuthorizedAccessException e) {
             throw e;
         } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);
