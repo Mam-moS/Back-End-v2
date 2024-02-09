@@ -9,6 +9,7 @@ import java.util.List;
 @NoArgsConstructor
 public class StudyPageResponseDto {
 
+    private Long studyIndex;
     private Long userStudyIndex;
     private HomeTabResponseDto home;
     private List<ProjectTabResponseDto> project;
@@ -17,13 +18,15 @@ public class StudyPageResponseDto {
     private List<PromotionSectionDto> promotions;
     private List<PromotionSectionDto> myStudyPromotions;
 
-    public StudyPageResponseDto(Long userStudyIndex,
+    public StudyPageResponseDto(Long studyIndex,
+                                Long userStudyIndex,
                                 HomeTabResponseDto home,
                                 List<ProjectTabResponseDto> project,
                                 SocialTabResponseDto social,
                                 List<NoticeSectionDto> notices,
                                 List<PromotionSectionDto> promotions,
                                 List<PromotionSectionDto> myStudyPromotions) {
+        this.studyIndex = studyIndex;
         this.userStudyIndex = userStudyIndex;
         this.home = home;
         this.project = project;
