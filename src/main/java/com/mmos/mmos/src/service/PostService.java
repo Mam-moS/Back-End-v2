@@ -101,10 +101,12 @@ public class PostService {
                 post.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
             }
 
-            for (MultipartFile multipartFile : multipartFiles) {
-                if (!multipartFile.isEmpty()) {
-                    Files file = fileService.uploadFile(multipartFile, post);
-                    post.addFile(file);
+            if (multipartFiles != null) {
+                for (MultipartFile multipartFile : multipartFiles) {
+                    if (!multipartFile.isEmpty()) {
+                        Files file = fileService.uploadFile(multipartFile, post);
+                        post.addFile(file);
+                    }
                 }
             }
 

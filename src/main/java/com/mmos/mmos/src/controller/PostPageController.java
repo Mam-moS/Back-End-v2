@@ -55,10 +55,10 @@ public class PostPageController extends BaseController {
     @PatchMapping("/{postIdx}/{userStudyIdx}")
     public ResponseEntity<ResponseApiMessage> updatePost(@PathVariable Long postIdx,
                                                          @PathVariable Long userStudyIdx,
-                                                         @RequestPart List<MultipartFile> multipartFiles,
+                                                         @RequestPart(required = false) List<MultipartFile> multipartFiles,
                                                          @RequestPart PostSaveRequestDto requestDto) {
         try {
-            if (multipartFiles.size() > 3)
+            if (multipartFiles != null && multipartFiles.size() > 5)
                 throw new OutOfRangeException(FILE_LIMIT_OVER);
 
             return sendResponseHttpByJson(SUCCESS, "글 수정 성공",

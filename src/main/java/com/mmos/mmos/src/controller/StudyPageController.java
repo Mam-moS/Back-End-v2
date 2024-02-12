@@ -178,7 +178,7 @@ public class StudyPageController extends BaseController {
 
     // 스터디 홍보 글쓰기
     @PostMapping("/promotion/{userStudyIdx}")
-    public ResponseEntity<ResponseApiMessage> savePromotion(@PathVariable Long userStudyIdx, @RequestPart PostSaveRequestDto requestDto, @RequestPart List<MultipartFile> multipartFiles) {
+    public ResponseEntity<ResponseApiMessage> savePromotion(@PathVariable Long userStudyIdx, @RequestPart PostSaveRequestDto requestDto, @RequestPart(required = false) List<MultipartFile> multipartFiles) {
         try {
             if (requestDto.getPostTitle().isEmpty())
                 throw new EmptyInputException(POST_POST_EMPTY_TITLE);
@@ -186,16 +186,18 @@ public class StudyPageController extends BaseController {
                 throw new EmptyInputException(POST_POST_EMPTY_CONTENTS);
             if (requestDto.getIsNotice())
                 throw new BusinessLogicException(BUSINESS_LOGIC_ERROR);
-            if (multipartFiles.size() > 3)
+            if (multipartFiles != null && multipartFiles.size() > 5)
                 throw new OutOfRangeException(FILE_LIMIT_OVER);
 
             // 게시물 저장
             Post post = postService.savePost(userStudyIdx, requestDto);
             // 파일 저장
-            for (MultipartFile multipartFile : multipartFiles) {
-                if (!multipartFile.isEmpty()) {
-                    Files file = fileService.uploadFile(multipartFile, post);
-                    post.addFile(file);
+            if (multipartFiles != null) {
+                for (MultipartFile multipartFile : multipartFiles) {
+                    if (!multipartFile.isEmpty()) {
+                        Files file = fileService.uploadFile(multipartFile, post);
+                        post.addFile(file);
+                    }
                 }
             }
 
@@ -207,7 +209,7 @@ public class StudyPageController extends BaseController {
 
     // 스터디 공지 글쓰기
     @PostMapping("/notice/{userStudyIdx}")
-    public ResponseEntity<ResponseApiMessage> saveNotice(@PathVariable Long userStudyIdx, @RequestPart PostSaveRequestDto requestDto, @RequestPart List<MultipartFile> multipartFiles) {
+    public ResponseEntity<ResponseApiMessage> saveNotice(@PathVariable Long userStudyIdx, @RequestPart PostSaveRequestDto requestDto, @RequestPart(required = false) List<MultipartFile> multipartFiles) {
         try {
             if (requestDto.getPostTitle().isEmpty())
                 throw new EmptyInputException(POST_POST_EMPTY_TITLE);
@@ -215,7 +217,7 @@ public class StudyPageController extends BaseController {
                 throw new EmptyInputException(POST_POST_EMPTY_CONTENTS);
             if (!requestDto.getIsNotice())
                 throw new BusinessLogicException(BUSINESS_LOGIC_ERROR);
-            if (multipartFiles.size() > 3)
+            if (multipartFiles != null && multipartFiles.size() > 5)
                 throw new OutOfRangeException(FILE_LIMIT_OVER);
 
             // 게시물 저장
