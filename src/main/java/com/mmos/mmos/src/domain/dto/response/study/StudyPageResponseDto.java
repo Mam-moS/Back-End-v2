@@ -11,6 +11,7 @@ public class StudyPageResponseDto {
 
     private Long studyIndex;
     private Long userStudyIndex;
+    private Integer myStatus;
     private HomeTabResponseDto home;
     private List<ProjectTabResponseDto> project;
     private SocialTabResponseDto social;
@@ -25,9 +26,11 @@ public class StudyPageResponseDto {
                                 SocialTabResponseDto social,
                                 List<NoticeSectionDto> notices,
                                 List<PromotionSectionDto> promotions,
-                                List<PromotionSectionDto> myStudyPromotions) {
+                                List<PromotionSectionDto> myStudyPromotions,
+                                Integer myStatus) {
         this.studyIndex = studyIndex;
         this.userStudyIndex = userStudyIndex;
+        this.myStatus = myStatus;
         this.home = home;
         this.project = project;
         this.social = social;
