@@ -7,10 +7,7 @@ import com.mmos.mmos.src.domain.dto.request.PostSaveRequestDto;
 import com.mmos.mmos.src.domain.dto.response.study.NoticeSectionDto;
 import com.mmos.mmos.src.domain.dto.response.study.PostTabResponseDto;
 import com.mmos.mmos.src.domain.dto.response.study.PromotionSectionDto;
-import com.mmos.mmos.src.domain.entity.Post;
-import com.mmos.mmos.src.domain.entity.Study;
-import com.mmos.mmos.src.domain.entity.UserStudy;
-import com.mmos.mmos.src.domain.entity.Users;
+import com.mmos.mmos.src.domain.entity.*;
 import com.mmos.mmos.src.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,6 +15,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -76,24 +74,38 @@ public class PostService {
     }
 
     @Transactional
-    public Post updatePost(Long postIdx, Long userStudyIdx, PostSaveRequestDto requestDto) throws BaseException {
+    public Post updatePost(Long postIdx, Long userStudyIdx, PostSaveRequestDto requestDto, List<MultipartFile> multipartFiles) throws BaseException {
         try {
             UserStudy userStudy = userStudyService.getUserStudy(userStudyIdx);
-            if(!userStudy.getUserStudyMemberStatus().equals(1))
+            if (!userStudy.getUserStudyMemberStatus().equals(1))
                 throw new NotAuthorizedAccessException(NOT_AUTHORIZED);
 
             Post post = findPostByIdx(postIdx);
+
+            for (Files file : post.getFiles()) {
+                System.out.println("delete " + file.getStoreFileUrl());
+                fileService.deleteFile(file);
+            }
 
             boolean isEdit = false;
             if (requestDto.getPostTitle() != null) {
                 post.updateTitle(requestDto.getPostTitle().toLowerCase());
                 isEdit = true;
-            } if(requestDto.getPostContents() != null) {
+            }
+            if (requestDto.getPostContents() != null) {
                 post.updateContents(requestDto.getPostContents().toLowerCase());
                 isEdit = true;
-            } if(isEdit) {
+            }
+            if (isEdit) {
                 post.updateWriter(userStudy.getUser());
                 post.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+            }
+
+            for (MultipartFile multipartFile : multipartFiles) {
+                if (!multipartFile.isEmpty()) {
+                    Files file = fileService.uploadFile(multipartFile, post);
+                    post.addFile(file);
+                }
             }
 
             return post;
@@ -144,7 +156,7 @@ public class PostService {
             Study study = userStudy.getStudy();
 
             for (Post studyPost : study.getStudyPosts()) {
-                if(studyPost.getPostIsNotice())
+                if (studyPost.getPostIsNotice())
                     notices.add(new NoticeSectionDto(studyPost));
                 else
                     promotions.add(new PromotionSectionDto(studyPost));

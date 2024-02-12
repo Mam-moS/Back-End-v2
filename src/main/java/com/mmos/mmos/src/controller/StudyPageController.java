@@ -193,8 +193,10 @@ public class StudyPageController extends BaseController {
             Post post = postService.savePost(userStudyIdx, requestDto);
             // 파일 저장
             for (MultipartFile multipartFile : multipartFiles) {
-                Files file = fileService.uploadFile(multipartFile, post);
-                post.addFile(file);
+                if (!multipartFile.isEmpty()) {
+                    Files file = fileService.uploadFile(multipartFile, post);
+                    post.addFile(file);
+                }
             }
 
             return sendResponseHttpByJson(SUCCESS, "스터디 홍보 글 쓰기 성공", null);
@@ -220,8 +222,10 @@ public class StudyPageController extends BaseController {
             Post post = postService.savePost(userStudyIdx, requestDto);
             // 파일 저장
             for (MultipartFile multipartFile : multipartFiles) {
-                Files file = fileService.uploadFile(multipartFile, post);
-                post.addFile(file);
+                if (!multipartFile.isEmpty()) {
+                    Files file = fileService.uploadFile(multipartFile, post);
+                    post.addFile(file);
+                }
             }
 
             return sendResponseHttpByJson(SUCCESS, "스터디 공지 글 쓰기 성공", null);

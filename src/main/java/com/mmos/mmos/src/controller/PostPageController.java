@@ -2,6 +2,7 @@ package com.mmos.mmos.src.controller;
 
 import com.mmos.mmos.config.ResponseApiMessage;
 import com.mmos.mmos.config.exception.BaseException;
+import com.mmos.mmos.config.exception.OutOfRangeException;
 import com.mmos.mmos.src.domain.dto.request.PostSaveRequestDto;
 import com.mmos.mmos.src.domain.dto.response.post.PostPageResponseDto;
 import com.mmos.mmos.src.domain.entity.Post;
@@ -13,7 +14,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
+import static com.mmos.mmos.config.HttpResponseStatus.FILE_LIMIT_OVER;
 import static com.mmos.mmos.config.HttpResponseStatus.SUCCESS;
 
 @RestController
@@ -50,10 +55,14 @@ public class PostPageController extends BaseController {
     @PatchMapping("/{postIdx}/{userStudyIdx}")
     public ResponseEntity<ResponseApiMessage> updatePost(@PathVariable Long postIdx,
                                                          @PathVariable Long userStudyIdx,
-                                                         @RequestBody PostSaveRequestDto requestDto) {
+                                                         @RequestPart List<MultipartFile> multipartFiles,
+                                                         @RequestPart PostSaveRequestDto requestDto) {
         try {
+            if (multipartFiles.size() > 3)
+                throw new OutOfRangeException(FILE_LIMIT_OVER);
+
             return sendResponseHttpByJson(SUCCESS, "글 수정 성공",
-                    postService.updatePost(postIdx, userStudyIdx, requestDto));
+                    postService.updatePost(postIdx, userStudyIdx, requestDto, multipartFiles));
         } catch (BaseException e) {
             e.printStackTrace();
             return sendResponseHttpByJson(e.getStatus(), e.getStatus().getMessage(), null);

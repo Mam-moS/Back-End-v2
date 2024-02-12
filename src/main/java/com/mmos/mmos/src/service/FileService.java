@@ -65,7 +65,15 @@ public class FileService {
 
             return fileRepository.save(uploadFile);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    @Transactional
+    public void deleteFile(Files file) throws BaseException {
+        try {
+            fileRepository.delete(file);
+        } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);
         }
     }
