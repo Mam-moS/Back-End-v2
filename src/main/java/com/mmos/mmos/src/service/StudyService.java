@@ -43,7 +43,7 @@ public class StudyService {
             if(requestDto.getMemberLimit() != null) {
                 study.updateMemberNum(requestDto.getMemberLimit());
             }
-            if(requestDto.getIsComplete() != null) {
+            if(requestDto.getIsComplete()) {
                 study.updateStudyIsComplete();
                 postRepository.deleteAll(study.getStudyPosts());
             }
