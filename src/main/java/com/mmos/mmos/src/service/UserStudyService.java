@@ -182,4 +182,13 @@ public class UserStudyService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    @Transactional
+    public Long getWaitingRequestStudy(Users user, Integer status) throws BaseException {
+        try {
+            return userStudyRepository.countAllByUserAndAndUserStudyMemberStatus(user, status);
+        } catch (Exception e) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }

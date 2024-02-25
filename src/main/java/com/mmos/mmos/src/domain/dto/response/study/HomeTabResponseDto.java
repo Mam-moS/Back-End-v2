@@ -17,8 +17,9 @@ public class HomeTabResponseDto {
     private ProjectTabResponseDto projectTabResponseDto;    // 가장 최근의 project 가져오기
     private List<Member> members;
     private List<NoticeSectionDto> notices = new ArrayList<>();
+    private Long requestCnt;
 
-    public HomeTabResponseDto(Study study, ProjectTabResponseDto projectTabResponseDto, List<Member> members, List<Post> notices) {
+    public HomeTabResponseDto(Study study, ProjectTabResponseDto projectTabResponseDto, List<Member> members, List<Post> notices, Long requestCnt) {
         this.title = study.getStudyName();
         this.summary = study.getStudyMemo();
         this.projectTabResponseDto = projectTabResponseDto;
@@ -27,5 +28,7 @@ public class HomeTabResponseDto {
         for (Post notice : notices) {
             this.notices.add(new NoticeSectionDto(notice));
         }
+
+        this.requestCnt = requestCnt;
     }
 }

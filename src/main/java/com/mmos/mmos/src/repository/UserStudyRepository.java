@@ -12,4 +12,6 @@ public interface UserStudyRepository extends JpaRepository<UserStudy, Long> {
     Optional<UserStudy> findByUserStudyIndex(Long userStudyIdx);
 
     Optional<UserStudy> findUserStudyByStudyAndUser(Study study, Users user);
+
+    Long countAllByUserAndAndUserStudyMemberStatus(Users user, Integer status);
 }
