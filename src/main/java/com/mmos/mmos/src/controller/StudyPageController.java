@@ -203,6 +203,7 @@ public class StudyPageController extends BaseController {
 
             return sendResponseHttpByJson(SUCCESS, "스터디 홍보 글 쓰기 성공", null);
         } catch (BaseException e) {
+            e.printStackTrace();
             return sendResponseHttpByJson(e.getStatus(), e.getStatus().getMessage(), null);
         }
     }
@@ -223,10 +224,12 @@ public class StudyPageController extends BaseController {
             // 게시물 저장
             Post post = postService.savePost(userStudyIdx, requestDto);
             // 파일 저장
-            for (MultipartFile multipartFile : multipartFiles) {
-                if (!multipartFile.isEmpty()) {
-                    Files file = fileService.uploadFile(multipartFile, post);
-                    post.addFile(file);
+            if (multipartFiles != null) {
+                for (MultipartFile multipartFile : multipartFiles) {
+                    if (!multipartFile.isEmpty()) {
+                        Files file = fileService.uploadFile(multipartFile, post);
+                        post.addFile(file);
+                    }
                 }
             }
 
