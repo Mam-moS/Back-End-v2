@@ -8,7 +8,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class StudyPageResponseDto {
-
+    private Boolean studyIsComplete;
     private Long studyIndex;
     private Long userStudyIndex;
     private Integer myStatus;
@@ -19,7 +19,8 @@ public class StudyPageResponseDto {
     private List<PromotionSectionDto> promotions;
     private List<PromotionSectionDto> myStudyPromotions;
 
-    public StudyPageResponseDto(Long studyIndex,
+    public StudyPageResponseDto(Boolean studyIsComplete,
+                                Long studyIndex,
                                 Long userStudyIndex,
                                 HomeTabResponseDto home,
                                 List<ProjectTabResponseDto> project,
@@ -28,6 +29,7 @@ public class StudyPageResponseDto {
                                 List<PromotionSectionDto> promotions,
                                 List<PromotionSectionDto> myStudyPromotions,
                                 Integer myStatus) {
+        this.studyIsComplete = studyIsComplete;
         this.studyIndex = studyIndex;
         this.userStudyIndex = userStudyIndex;
         this.myStatus = myStatus;

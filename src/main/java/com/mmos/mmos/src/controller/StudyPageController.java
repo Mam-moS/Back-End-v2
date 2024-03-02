@@ -76,7 +76,7 @@ public class StudyPageController extends BaseController {
                 SocialTabResponseDto social = new SocialTabResponseDto(members, study.getStudyMemberNum());
                 PostTabResponseDto post = postService.getStudyPosts(userStudy);
 
-                result.add(new StudyPageResponseDto(study.getStudyIndex(), userStudy.getUserStudyIndex(), home, project, social, post.getNotices(), postService.getPromotions(), post.getPromotions(), userStudy.getUserStudyMemberStatus()));
+                result.add(new StudyPageResponseDto(study.getStudyIsComplete(),study.getStudyIndex(), userStudy.getUserStudyIndex(), home, project, social, post.getNotices(), postService.getPromotions(), post.getPromotions(), userStudy.getUserStudyMemberStatus()));
             }
 
             return sendResponseHttpByJson(SUCCESS, "스터디 페이지 로드 성공", result);
@@ -144,6 +144,7 @@ public class StudyPageController extends BaseController {
     @PatchMapping("/{userStudyIdx}")
     public ResponseEntity<ResponseApiMessage> updateStudy(@PathVariable Long userStudyIdx, @RequestBody StudyUpdateRequestDto requestDto) {
         try {
+            System.out.println(requestDto.getIsComplete());
             UserStudy userStudy = userStudyService.getUserStudy(userStudyIdx);
             return sendResponseHttpByJson(SUCCESS, "스터디 수정 성공",
                     studyService.updateStudy(userStudy.getStudy().getStudyIndex(), requestDto));
